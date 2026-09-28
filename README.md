@@ -11,7 +11,7 @@ Los tres cursos comparten la misma infraestructura de laboratorio: cuadernos en 
 
 | Curso | Guía | Cuaderno sesión 1 | Cuaderno sesión 2 |
 |---|---|---|---|
-| Cálculo Diferencial | [Guía L1](diferencial/Guia_L1_La_factura_de_la_ciudad.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L1_sesion1.ipynb) | (próximamente) |
+| Cálculo Diferencial | [Guía L1](diferencial/Guia_L1_La_factura_de_la_ciudad.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L1_sesion1.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L1_sesion2.ipynb) |
 | Cálculo Integral | [Guía L1](integral/Guia_L1_La_factura_de_la_ciudad.pdf) · [gráfica P1](integral/prediccion_P1_enero2013.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/integral/L1_sesion1.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/integral/L1_sesion2.ipynb) |
 | Introducción a las CC | [Guía L1](introduccion_cc/Guia_L1_La_factura_de_la_ciudad.pdf) (la misma de Diferencial) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/introduccion_cc/L1_sesion1.ipynb) | — |
 
@@ -27,7 +27,7 @@ Intento propio antes de consultar · la IA no es la autoridad final · todo uso 
 
 ```
 sesion0/           Guía común a los tres cursos (fuente .tex y PDF)
-diferencial/       Guía L1 + cuaderno sesión 1
+diferencial/       Guía L1 + cuadernos sesiones 1 y 2
 integral/          Guía L1 + gráfica de predicción + cuadernos sesiones 1 y 2
 introduccion_cc/   Mismo laboratorio que Diferencial
 datos/             Datos congelados, script de agregación, checksums
