@@ -1,0 +1,247 @@
+\documentclass[12pt,letterpaper]{article}
+% ---------- Guía Sesión 0 — Antes del primer laboratorio (común a los tres cursos) ----------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\geometry{letterpaper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.12}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{0.5em}{}
+\renewcommand{\arraystretch}{1.25}
+\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\bfseries\color{blue!60!black}, commentstyle=\color{gray}, showstringspaces=false, frame=single, framerule=0.3pt, xleftmargin=1em, aboveskip=0.8em, belowskip=0.8em, literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {¿}{{?`}}1 {¡}{{!`}}1}
+% ---- Cajas del laboratorio ----
+\newtcolorbox{cajabitacora}{colback=yellow!8!white,colframe=brown!70!black,title=\textbf{Bitácora del profesor --- antes de empezar},breakable}
+\newtcolorbox{cajalogros}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Al terminar la Sesión 0},breakable}
+\newtcolorbox{cajareal}{colback=red!4!white,colframe=red!60!black,title=\textbf{Léanlo dos veces},breakable}
+\newtcolorbox{cajaprediccion}[1]{colback=orange!8!white,colframe=orange!80!black,title=\textbf{#1},breakable}
+\newtcolorbox{cajaia}{colback=teal!6!white,colframe=teal!60!black,title=\textbf{Protocolo de IA},breakable}
+\newtcolorbox{cajaentrega}{colback=gray!8!white,colframe=black!70,title=\textbf{Qué se entrega antes de la Sesión 0},breakable}
+% ---- Marcadores que el profesor reemplaza ----
+\newcommand{\REPO}{\url{https://github.com/cmorregof/labs-calculo-2026-2}}
+\newcommand{\FECHA}{\textbf{lunes 28 de septiembre de 2026, 6:00 p.\,m.}}
+\newcommand{\ENLACEMEET}{\url{https://meet.google.com/ssb-hsev-vix}}
+\newcommand{\FORMULARIO}{\textbf{[enlace al formulario de la prueba de humo]}}
+\newcommand{\TABLACURSO}{\textbf{[enlace a la tabla compartida del microdataset]}}
+% -------------------------------------------------
+\begin{document}
+\begin{center}
+    {\Large \textbf{Universidad Nacional de Colombia --- Sede Manizales}}\\
+    {\large \textbf{Cálculo Diferencial \;$\cdot$\; Cálculo Integral \;$\cdot$\; Introducción a las Ciencias de la Computación}}\\[0.8em]
+    {\LARGE \textbf{Guía Sesión 0 --- Antes del primer laboratorio}}\\[0.4em]
+    {\large Todo listo para que el laboratorio empiece en el minuto uno}\\[0.5em]
+    {\normalsize Sesión virtual conjunta \quad$\cdot$\quad \FECHA \quad$\cdot$\quad Nada que instalar: todo corre en el navegador}
+\end{center}
+
+\begin{cajabitacora}
+Los tres cursos comparten la misma infraestructura de laboratorio: un cuaderno en Google Colab, datos que viven en un repositorio de GitHub, una cuenta de Kaggle para ir a la fuente, y una inteligencia artificial que trabaja de tutora, no de autora. Por eso la primera sesión la haremos \textbf{todos juntos, virtual}, y por eso existe esta guía: para que el día de la sesión no perdamos una hora creando cuentas y descargando archivos, sino que empecemos a mirar datos reales desde el primer minuto.
+
+La idea es simple. Ustedes llegan con las cuentas creadas, los archivos descargados y una \emph{prueba de humo} superada. Yo llego con la historia (una ducha en Londres, un contador de luz y una pregunta de matemáticas) y con la demostración de todo el camino: de un archivo de texto a una tabla, de una tabla a una gráfica, de una gráfica a una pregunta seria. Al final de la sesión cada curso sabe exactamente qué va a hacer en su propio laboratorio.
+
+Lean esta guía completa, hagan la lista de chequeo con calma --- son unos 40 minutos si todo sale bien --- y si algo se traba, escríbanle al monitor \emph{antes} de la sesión, no durante.
+\end{cajabitacora}
+
+\begin{cajalogros}
+Al terminar la Sesión 0 estarás en capacidad de:
+\begin{enumerate}[leftmargin=1.5em]
+    \item Abrir un cuaderno de Colab desde el repositorio del curso, guardar tu propia copia en Drive y ejecutar celdas de código y de texto.
+    \item Explicar con tus palabras qué es un archivo CSV, una API, un dataset y un repositorio, y cargar una tabla en Colab desde una URL y desde un archivo propio.
+    \item Verificar que los datos que descargaste son exactamente los del curso, usando conteos y una suma de comprobación (\emph{checksum}).
+    \item Usar la IA como tutora dentro de las reglas del curso y llevar la bitácora individual desde el primer prompt.
+    \item Saber qué traer y qué hacer en la primera sesión de laboratorio de tu curso.
+\end{enumerate}
+\end{cajalogros}
+
+\section{Cuentas: cinco, y todas gratis}
+Créenlas con el correo institucional cuando sea posible (\texttt{@unal.edu.co}); es el que usaremos para compartir cosas.
+
+\begin{enumerate}[leftmargin=1.5em]
+    \item \textbf{Google} (para Colab y Drive). Con la cuenta institucional ya la tienen. Abran \url{https://colab.research.google.com}, creen un cuaderno nuevo y ejecuten \texttt{print("hola")}. Si salió \texttt{hola}, Colab funciona.
+    \item \textbf{GitHub} (\url{https://github.com}). Solo la versión web; no hay que instalar Git. Nombre de usuario sobrio: lo van a poner en una hoja de vida. Después de crearla, entren al repositorio del curso (ver enlace en la sección 2) y denle \emph{Star}: así lo encuentran siempre desde su perfil.
+    \item \textbf{Kaggle} (\url{https://www.kaggle.com}). Es de donde bajaremos los datos crudos de Londres en la tarea puente. Al registrarse, Kaggle pide verificar el número de teléfono antes de permitir descargas: háganlo ya, no el día que lo necesiten.
+    \item \textbf{Una inteligencia artificial.} El protocolo del curso no depende de cuál usen; depende de la bitácora. Opciones, en este orden de recomendación:
+    \begin{itemize}[leftmargin=1.5em]
+        \item \textbf{Claude} (\url{https://claude.ai}): la recomendada del curso. La versión gratuita tiene un límite de mensajes que se agota en un laboratorio intenso; sépanlo.
+        \item \textbf{Gemini} con la cuenta institucional: la Universidad paga la versión completa, sin límite práctico de uso. Es la opción sin excusas.
+        \item \textbf{ChatGPT}: si ya la usan y la prefieren, sirve igual.
+    \end{itemize}
+    Cualquiera de las tres, siempre documentada. \textbf{``Se me acabaron los créditos'' no es una razón para no tener bitácora.}
+    \item \textbf{Twitch} (opcional, \url{https://www.twitch.tv}). Si la sesión se transmite, el chat de Twitch será un segundo canal de preguntas. No hace falta cuenta para ver; sí para escribir.
+\end{enumerate}
+
+\section{Descargas: qué, de dónde y cuánto pesa}
+Todo está en el repositorio del curso:
+\begin{center}\REPO\end{center}
+Descarguen los archivos de \textbf{su} curso a una carpeta que se llame \texttt{laboratorio} (no al escritorio, no a ``Descargas'': dentro de un mes no lo van a encontrar).
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{>{\ttfamily}l X r}
+\toprule
+\textrm{\textbf{Archivo}} & \textbf{Qué es} & \textbf{Pesa}\\
+\midrule
+londres\_mensual.csv & Consumo \textbf{mensual} por hogar de Londres, congelado por el profesor. Columnas \texttt{hogar, mes, kwh}. \textbf{Diferencial e Introducción a las CC.} & 2,8 MB\\
+london\_energy.csv.gz & Consumo \textbf{diario} por hogar (el crudo de Kaggle, comprimido; \texttt{pandas} lo lee tal cual). \textbf{Integral.} & 19 MB\\
+chec\_tarifas\_congeladas.csv & Pliego tarifario de la CHEC (2008 a agosto de 2026), copia congelada del dataset \texttt{c698-wqig} de \texttt{datos.gov.co}. \textbf{Todos.} & 7,3 MB\\
+agregar\_londres.py & El script que produce el mensual a partir del diario. Para la tarea puente. & 2 KB\\
+L1\_sesion1.ipynb & El cuaderno base de la sesión 1 \textbf{de su curso} (Diferencial e Introducción a las CC comparten el mismo; Integral tiene el suyo). & ---\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Huellas MD5 de los archivos de datos (ver la caja de abajo):
+\begin{center}
+\small\ttfamily
+\begin{tabular}{ll}
+londres\_mensual.csv & fc7d672dd0cb561f27636337d4d40c41\\
+london\_energy.csv.gz & fef86676620cf9336c4a16f772e0b466\\
+chec\_tarifas\_congeladas.csv & a04543d96a201bd3fed0a3d1d2ee542b\\
+agregar\_londres.py & fc990dcf56e1cf258409ca58f92e57f6\\
+\end{tabular}
+\end{center}
+
+El archivo de Kaggle (\texttt{london\_energy.csv}, 96 MB sin comprimir, del dataset \emph{London Homes Energy Data}) \textbf{no} hay que bajarlo todavía: es la tarea puente, y la gracia es que lo bajen ustedes de la fuente, no de mi copia.
+
+\begin{cajareal}
+\textbf{¿Para qué sirve el MD5?} Es una huella digital del archivo: una cadena que cambia si cambia un solo byte. Si su huella coincide con la de la tabla, tienen exactamente los datos del curso; si no coincide, no está ``casi bien'': hay una diferencia, y hay que encontrarla. En Colab, la prueba de humo de la siguiente sección la calcula por ustedes. En su computador: \texttt{md5sum archivo} (Linux), \texttt{md5 archivo} (macOS) o \texttt{certutil -hashfile archivo MD5} (Windows).
+\end{cajareal}
+
+\section{La prueba de humo (obligatoria)}
+Antes de la sesión, cada estudiante abre un cuaderno nuevo en Colab, sube el archivo de datos de su curso (ícono de carpeta a la izquierda $\to$ subir), pega esta celda y la ejecuta:
+
+\begin{lstlisting}
+import pandas as pd, hashlib
+
+ARCHIVO = "londres_mensual.csv"   # Integral: "london_energy.csv.gz"
+
+df = pd.read_csv(ARCHIVO)
+md5 = hashlib.md5(open(ARCHIVO, "rb").read()).hexdigest()
+print("Filas y columnas:", df.shape)
+print("Columnas:", list(df.columns))
+print("Hogares distintos:", df.iloc[:, 0].nunique())
+print("MD5:", md5)
+\end{lstlisting}
+
+Lo que debe salir, exactamente:
+
+\begin{center}
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+ & \textbf{Diferencial / Intro CC} (\texttt{londres\_mensual.csv}) & \textbf{Integral} (\texttt{london\_energy.csv.gz})\\
+\midrule
+Filas y columnas & \texttt{(113440, 3)} & \texttt{(3510433, 3)}\\
+Columnas & \texttt{hogar, mes, kwh} & \texttt{LCLid, Date, KWH}\\
+Hogares distintos & 5556 & 5566\\
+MD5 & \texttt{fc7d6726\ldots} & \texttt{fef86676\ldots}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Los de Introducción a las Ciencias de la Computación corren la celda con el archivo mensual, igual que Diferencial: su primer laboratorio con máquina es el mismo.
+
+Fíjense en un detalle que ya es contenido: \textbf{5.556 no es 5.566}. El archivo mensual tiene diez hogares menos que el diario. Nadie los borró a mano: los descartó una regla escrita en \texttt{agregar\_londres.py}. En la tarea puente van a tener que encontrar esa regla, defenderla o atacarla.
+
+\begin{cajaentrega}
+Antes de \FECHA, en el formulario \FORMULARIO:
+\begin{enumerate}[leftmargin=1.5em]
+    \item Su nombre de usuario de GitHub (el enlace a su perfil).
+    \item Un pantallazo de la prueba de humo con las cuatro líneas de salida.
+    \item Los dos números: hogares distintos y los primeros ocho caracteres del MD5.
+    \item Qué IA van a usar (Claude / Gemini / ChatGPT).
+\end{enumerate}
+Quien no supere la prueba de humo, escribe al monitor \emph{antes} de la sesión con el pantallazo del error. El día de la sesión no se depuran instalaciones: se hace laboratorio.
+\end{cajaentrega}
+
+\section{Glosario: las palabras que van a oír toda la sesión}
+Léanlo una vez ahora; van a volver a él.
+
+\begin{description}[leftmargin=1.5em,style=nextline]
+    \item[CSV (\emph{comma-separated values})] El formato más humilde y más universal para tablas: texto plano, una fila por línea, columnas separadas por comas. Sin colores, sin fórmulas. Es el idioma en que las instituciones del mundo publican lo que miden.
+    \item[Dataset] Una tabla con pretensiones: datos \textbf{más su documentación}: qué mide cada columna, en qué unidades, quién los recogió y cuándo. Una tabla sin unidades es un chisme sin fuente.
+    \item[API (\emph{application programming interface})] Un mesero de datos. Una URL bien construida es un pedido; el servidor responde con la tabla. Cuando lean \texttt{pd.read\_csv("https://www.datos.gov.co/...")}, eso es una API funcionando. Y las APIs sirven porciones: sin decirle \texttt{\$limit}, el mesero de \texttt{datos.gov.co} trae 1.000 filas y uno ni se entera.
+    \item[Dato congelado] Una copia del dataset tomada en una fecha fija, guardada en el repositorio, para que todo el curso trabaje sobre \emph{exactamente} los mismos números. Lo contrario de ``en vivo''. Congelar es una decisión, y se documenta.
+    \item[Checksum / MD5] La huella digital de un archivo. Dos archivos con la misma huella son el mismo archivo.
+    \item[Repositorio] La carpeta pública, con historia, donde vive el material del curso (en GitHub). Cada cambio queda registrado: quién, cuándo, qué.
+    \item[Commit] Una foto del repositorio en un instante, con un mensaje que dice qué cambió. Es la unidad de la historia.
+    \item[README] El archivo que explica qué hay en el repositorio y cómo usarlo. Lo primero que se lee; lo último que se escribe bien.
+    \item[Cuaderno (\emph{notebook}) / celda] Un documento que mezcla texto y código ejecutable, dividido en celdas. Las de código se ejecutan con \emph{Shift+Enter}; las de texto se editan con doble clic. El archivo termina en \texttt{.ipynb}.
+    \item[Colab] Google Colaboratory: un cuaderno que corre en un computador de Google, desde el navegador. Por eso no instalamos nada. El \emph{entorno de ejecución} se reinicia si lo dejan solo mucho rato: guarden copia en Drive.
+    \item[pandas / DataFrame] La biblioteca de Python para tablas, y el nombre que le da a una tabla en memoria. \texttt{df} es la abreviatura tradicional.
+    \item[NaN (\emph{not a number})] El hueco: una celda sin valor. No es cero. Contarlos es lo primero que se hace con una tabla nueva.
+    \item[Dominio de una columna] El conjunto de valores \emph{legales} de esa columna, escrito con notación de conjuntos antes de operar. Limpiar datos es comparar cada valor contra su dominio y juzgar.
+    \item[kWh (kilovatio-hora)] La unidad de energía de la factura de la luz. Una bombilla de 100 W encendida diez horas consume 1 kWh.
+    \item[Estrato] La clasificación socioeconómica colombiana de las viviendas (1 a 6) que decide cuánto se subsidia o se contribuye en la tarifa.
+    \item[Consumo de subsistencia (CS)] El tope de kWh mensuales con tarifa subsidiada para estratos 1 a 3. En Manizales, a más de 1.000 m de altitud, son \textbf{130 kWh/mes} (173 por debajo de los 1.000 m). Aparece en su recibo.
+    \item[Mercado de comercialización] La unidad territorial en la que se fija la tarifa. Manizales pertenece al mercado \emph{CHEC}: un hogar de Manizales y uno de Aguadas del mismo estrato pagan el mismo costo unitario. La tarifa no sabe en qué municipio vives.
+    \item[Bitácora de IA] El registro individual de cada uso de la IA en el laboratorio: prompt $\to$ fragmento de la respuesta $\to$ qué aceptaron, corrigieron o rechazaron. Una página. Sin bitácora no hay laboratorio.
+    \item[Reproducibilidad] Que otra persona, con los mismos datos y el mismo código, llegue \emph{exactamente} al mismo resultado. En ciencia de datos la confianza no se pide: se reproduce.
+\end{description}
+
+\section{Cómo será la Sesión 0}
+Virtual, \ENLACEMEET, dos horas. Cámara opcional; micrófono cuando se pida la palabra; preguntas por el chat de la videollamada (y por el chat de Twitch, si transmitimos). Si la sesión se transmite, \textbf{solo se ve la pantalla y la voz del profesor}: ninguna cámara ni micrófono de estudiantes sale al aire. La grabación quedará enlazada en el repositorio.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Minutos} & \textbf{Qué pasa}\\
+\midrule
+0--15 & La historia: una ducha en Londres, un contador en la pared y una pregunta de matemáticas. Por qué un laboratorio y no un taller.\\
+15--35 & El camino completo, en vivo: abrir el cuaderno desde GitHub, copia en Drive, cargar \texttt{londres\_mensual.csv}, \texttt{shape}, \texttt{head}, primer histograma. Todos lo hacen en paralelo en su Colab.\\
+35--55 & El mesero: el pliego de la CHEC pedido por API a \texttt{datos.gov.co}, con y sin \texttt{\$limit}. Y el dataset de 47 GB que nadie descarga y a todo el mundo se le pregunta.\\
+55--70 & El protocolo de IA, con un ejemplo real: un prompt bueno, un prompt malo, y cómo se ve una línea de bitácora.\\
+70--85 & Cómo se entrega: el cuaderno ejecutado de arriba a abajo, la bitácora, la tabla compartida del curso (\TABLACURSO).\\
+85--120 & Por curso, en tres bloques de diez minutos: ``y ustedes van a hacer esto''. Preguntas.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{cajaia}
+Las tres reglas, desde el primer día:
+\begin{enumerate}[leftmargin=1.5em]
+    \item \textbf{Intento propio antes de consultar.} La IA entra cuando ya hay algo suyo que mostrarle.
+    \item \textbf{La IA no es la autoridad final.} Todo lo que diga se contrasta con los datos, con la guía o con el monitor.
+    \item \textbf{Todo uso va a la bitácora individual.} Prompt, fragmento de respuesta, y qué hicieron con ella.
+\end{enumerate}
+Para conceptos nuevos (CSV, API, NaN) pregúntenle con confianza; exíjanle ejemplos distintos a los de la guía. Para depurar, el prompt del curso: \emph{``Este código da este error: [ambos]. No me des el código corregido; explícame el error y hazme una pregunta que me guíe.''} Prohibido pedirle las conclusiones, las decisiones de modelación o el informe. Todo integrante debe poder explicar cualquier celda si el monitor la señala.
+\end{cajaia}
+
+\section{Y después de la Sesión 0: qué hace cada curso}
+
+\subsection{Cálculo Diferencial --- \emph{La factura de la ciudad}}
+Pregunta rectora: \textbf{¿lo que pagas es una función de lo que consumes?} Sesión 1: la ciudad en una tabla (\texttt{londres\_mensual.csv}): dominios de columnas, histograma, la nube de miles de puntos y el test de la recta vertical sobre datos reales; el movimiento de \emph{condicionar} hasta que la relación se vuelva función. Tarea puente: reproducir el archivo congelado desde Kaggle con \texttt{agregar\_londres.py}. Sesión 2: la tarifa de la CHEC como función por trozos, la decisión de estrato para Londres y la nube en pesos.
+
+\textbf{Traer a la sesión 1:} las predicciones P1--P3 hechas a mano. \textbf{Traer a la sesión 2:} el recibo de energía de su casa (consumo en kWh, valor pagado, estrato).
+
+\subsection{Cálculo Integral --- \emph{Dado lo que consumes cada día, ¿cuánto acumula el mes?}}
+Pregunta rectora: \textbf{el contador de la luz es una integral andando.} Sesión 1: el consumo diario de un hogar como función escalonada (\texttt{london\_energy.csv.gz}), la partición, el producto con unidades, la integral calculada tres veces, el álgebra de escaleras y el misterio de febrero. Tarea puente: nueve casos reproducidos desde la fuente y la regla de los 25 días. Sesión 2: cobrar el mes de dos maneras y descubrir que el orden de la acumulación importa.
+
+\textbf{Traer a la sesión 1:} la gráfica impresa del hogar MAC002515 (enero de 2013) con la estimación P1 a mano. \textbf{Traer a la sesión 2:} el recibo de energía de su casa.
+
+\subsection{Introducción a las Ciencias de la Computación}
+Ustedes ya hicieron el primer laboratorio en papel, sin máquina, y descubrieron qué le pasa a una instrucción cuando quien la ejecuta no entiende. Ahora la máquina: van a hacer \textbf{el mismo laboratorio que Cálculo Diferencial} --- \emph{La factura de la ciudad}, sesión 1, con el mismo cuaderno y los mismos datos --- porque lo que ese laboratorio enseña primero no es cálculo, es computación: qué es un archivo de datos, cómo una máquina lo convierte en una tabla, cómo se le pregunta a esa tabla con código y cómo se decide qué valores son legales antes de operar. La pregunta de la función la van a ver con menos formalismo y más curiosidad; el resto es idéntico.
+
+\textbf{Traer a la sesión 1:} las predicciones P1--P3 de la guía de Diferencial, hechas a mano, y sus hojas del laboratorio en papel.
+
+\vspace{1em}
+\begin{center}
+\emph{Nos vemos el \FECHA. Lleguen con las cuentas creadas, los archivos descargados y la prueba de humo superada. El resto lo ponemos nosotros.}
+\end{center}
+
+\end{document}

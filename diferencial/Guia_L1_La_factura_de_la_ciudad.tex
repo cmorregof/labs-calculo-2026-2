@@ -1,0 +1,185 @@
+\documentclass[12pt,letterpaper]{article}
+% -------------------------------------------------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\geometry{letterpaper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.12}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{0.5em}{}
+\renewcommand{\arraystretch}{1.25}
+\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\bfseries\color{blue!60!black}, commentstyle=\color{gray}, showstringspaces=false, frame=single, framerule=0.3pt, xleftmargin=1em, aboveskip=0.8em, belowskip=0.8em, literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1}
+% ---- Cajas del laboratorio ----
+\newtcolorbox{cajabitacora}{colback=yellow!8!white,colframe=brown!70!black,title=\textbf{Bitácora del profesor --- Londres, último día},breakable}
+\newtcolorbox{cajalogros}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Logros de este laboratorio},breakable}
+\newtcolorbox{cajareal}{colback=red!4!white,colframe=red!60!black,title=\textbf{Lo real y lo supuesto (léanlo dos veces)},breakable}
+\newtcolorbox{cajaprediccion}[1]{colback=orange!8!white,colframe=orange!80!black,title=\textbf{#1},breakable}
+\newtcolorbox{cajaia}{colback=teal!6!white,colframe=teal!60!black,title=\textbf{Protocolo de IA},breakable}
+\newtcolorbox{cajaentrega}{colback=gray!8!white,colframe=black!70,title=\textbf{Entregables y rúbrica},breakable}
+% -------------------------------------------------
+\begin{document}
+\begin{center}
+    {\Large \textbf{Universidad Nacional de Colombia --- Sede Manizales}}\\
+    {\large \textbf{Cálculo Diferencial --- Laboratorio computacional}}\\[0.8em]
+    {\LARGE \textbf{Guía L1 --- La factura de la ciudad}}\\[0.4em]
+    {\large ¿Lo que pagas es una función de lo que consumes?}\\[0.5em]
+    {\normalsize Bloque I: Funciones \quad$\cdot$\quad Dos sesiones de 2 horas \quad$\cdot$\quad Equipos de 3--4 \quad$\cdot$\quad Python + IA en Colab}
+\end{center}
+
+\begin{cajabitacora}
+Esta idea no salió de un libro. Salió de una ducha.
+
+Hace un tiempo estuve en Londres, en el Imperial College, como ponente en un congreso de inteligencia artificial en salud. El último día, mientras me bañaba, se fue el agua. Así, sin aviso, y en el momento más crítico: completamente enjabonado. Me tocó terminar como se pudo, con el lavamanos y la dignidad que quedaba. Y ahí, goteando, pensé: \emph{en el primer mundo también se va el agua}.
+
+Londres es un choque cultural constante. Uno va a cruzar la calle y el piso mismo le grita \textsc{look left} o \textsc{look right}, porque --- como sabrán --- en el Reino Unido se maneja por la izquierda, y la ciudad sabe que el peatón extranjero va a mirar hacia el lado equivocado. Guarden ese detalle, que más adelante en esta guía nos va a servir. Caminé mucho esos días: museos, la Torre de Londres, la luz encendida por todas partes, y ese frío que le hace entender a uno por qué allá la calefacción no es un lujo sino una necesidad. Y entre la ducha traicionera y las luces de la ciudad me fui haciendo preguntas: ¿cuánta luz consumirá un hogar en Londres? ¿Cuánto pagarán? ¿Y cómo sería si les cobrara la CHEC, con nuestras tarifas, con nuestros estratos?
+
+La idea final se me ocurrió en la cima del London Eye --- imagínense esa rueda gigante, que por cierto funciona con electricidad --- mirando a lo lejos el Big Ben y el Támesis. Pensé en ustedes y en este curso, y me dije: eso es un proyecto. Miles de hogares reales de Londres, las tarifas reales de la CHEC, y una pregunta que parece de plata pero es de matemáticas: ¿el valor que pagas es una \emph{función} de lo que consumes?
+
+Bienvenidos al primer laboratorio. Lo pensé para ustedes desde el otro lado del océano.
+\end{cajabitacora}
+
+\section{¿Qué vamos a hacer?}
+Vamos a tomar los consumos eléctricos \textbf{reales} de miles de hogares de Londres --- medidos por contadores inteligentes --- y les vamos a cobrar la luz con las tarifas \textbf{reales} de la CHEC, estrato por estrato, como si esos hogares vivieran en Manizales. Con eso construiremos una nube de miles de puntos (consumo, valor a pagar) --- una gráfica que no cabe en ningún tablero --- y sobre esa nube le haremos preguntas serias al concepto más importante del semestre: la función.
+
+\begin{cajareal}
+Este proyecto es un \emph{contrafactual}: un experimento de ``¿qué pasaría si\ldots?''. Sean precisos sobre qué es cada cosa:
+\begin{itemize}[itemsep=0.1em]
+    \item \textbf{Reales:} los consumos (hogares londinenses de verdad, medidos cada media hora) y las tarifas (el pliego oficial de CHEC publicado en datos abiertos).
+    \item \textbf{Supuesto nuestro:} el cruce entre ambos. Ningún londinense paga con tarifas de CHEC, y la asignación de estratos a hogares la decidiremos nosotros (y esa decisión habrá que defenderla).
+\end{itemize}
+Por eso las conclusiones de este laboratorio valen para entender \emph{la función que convierte consumo en cobro}, no para facturarle a nadie. Saber separar el dato del supuesto es la primera habilidad de cualquiera que modele en serio --- y la primera cosa que un modelo hecho sin pensar (o pedido entero a una IA) no sabe hacer.
+\end{cajareal}
+
+\begin{cajalogros}
+Al terminar este laboratorio estarás en capacidad de:
+\begin{enumerate}[label=\arabic*., itemsep=0.1em]
+    \item Explicar qué es un archivo CSV, qué es una API y qué es un \emph{dataset}, y cargar datos en Colab desde una URL y desde un archivo propio.
+    \item Leer una tabla de datos como objeto matemático: filas como observaciones, columnas como variables, y \textbf{el dominio de cada columna} escrito con notación de conjuntos --- incluyendo la detección de valores que no pertenecen al dominio (la limpieza de datos como acto matemático).
+    \item Decidir, con el criterio de la recta vertical aplicado a datos reales, si una relación es o no una función, y \emph{convertir} una relación en función condicionando por una variable (nivel MA1--MA2 de la rúbrica).
+    \item Construir en Python una función definida por trozos a partir de una tarifa oficial, aplicarla a miles de datos y cuantificar cambios: cuánto cambia el cobro cuando el consumo cambia, en distintos tramos y estratos (nivel MA3).
+    \item Distinguir lo real de lo supuesto en un modelo, y defender (o criticar) una decisión de modelación propia.
+\end{enumerate}
+\end{cajalogros}
+
+\section{Los datos (y tres palabras nuevas)}
+Antes de tocar código, tres conceptos de infraestructura que a partir de hoy son de ustedes:
+
+\textbf{CSV} (\emph{comma-separated values}) es el formato más humilde y más universal para tablas: un archivo de texto plano donde cada línea es una fila y las columnas van separadas por comas. Sin colores, sin fórmulas, sin adornos: solo los datos. Es el idioma en que las instituciones del mundo publican lo que miden, y por eso es el idioma en que trabajaremos.
+
+\textbf{API} (\emph{application programming interface}) es, para lo que nos importa hoy, un mesero de datos: una URL construida de cierta forma es un pedido, y el servidor responde con los datos solicitados. Cuando abajo lean \texttt{pd.read\_csv("https://www.datos.gov.co/...")}, eso es una API funcionando: el Estado colombiano sirviéndole una tabla a su cuaderno de Colab.
+
+\textbf{Dataset} es una tabla con pretensiones: datos más su documentación --- qué mide cada columna, en qué unidades, quién los recogió y cuándo. Una tabla sin unidades es un chisme sin fuente.
+
+Los tres datasets del proyecto:
+\begin{enumerate}[label=\arabic*., itemsep=0.15em]
+    \item \textbf{Consumos de Londres:} lecturas de contadores inteligentes de miles de hogares londinenses (proyecto Low Carbon London, publicado por UK Power Networks en el London Datastore). Para la sesión 1 usaremos la versión \emph{congelada y agregada a consumo mensual por hogar} que está en el repositorio del curso (\texttt{londres\_mensual.csv}: columnas \texttt{hogar}, \texttt{mes}, \texttt{kwh}); el dato crudo de media en media hora queda enlazado para los curiosos.
+    \item \textbf{Tarifas CHEC:} el dataset oficial \emph{Costo unitario de tarifas de energía CHEC} en \url{https://www.datos.gov.co} (identificador \texttt{c698-wqig}), con la tarifa por estrato y rango de consumo, mes a mes. Este sí lo cargaremos en vivo, por API.
+    \item \textbf{El recibo de tu casa:} cada estudiante trae a la sesión 2 un recibo de energía físico o digital de su casa (consumo del mes en kWh, valor pagado, estrato). Será nuestro primer aporte al \emph{microdataset del curso}.
+\end{enumerate}
+
+\section{Sesión 1 --- Explorar: la ciudad en una tabla}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir (a mano, antes de cargar nada)}
+En papel, 15 minutos, se adjunta foto al informe:
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \item ¿Cuántos kWh creen que consume al mes un hogar londinense típico? ¿Más o menos que uno manizaleño? Anoten un número y una razón (piensen en la calefacción y en el invierno).
+    \item Si grafican el consumo mensual de \emph{todos} los hogares a lo largo de los meses del año, ¿qué forma esperan ver? ¿Y habrá meses ``caros''?
+    \item ¿``El consumo es una función del mes''? Discutan 5 minutos en el equipo y escriban un sí o un no con su porqué. (Vuelvan a esta pregunta al final de la sesión: es la más importante de la guía.)
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.} En el cuaderno base \texttt{L1\_sesion1.ipynb}, con el monitor:
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Cargar y mirar.} Carguen \texttt{londres\_mensual.csv} con pandas. Antes de cualquier cálculo, contesten con código: ¿cuántas filas? ¿cuántas columnas? ¿cuántos hogares distintos? ¿qué rango de fechas? (\texttt{shape}, \texttt{head}, \texttt{nunique}). A esto se le llama \emph{conocer el dataset}, y hacerlo antes de calcular es el equivalente a mirar antes de cruzar.
+    \item \textbf{El dominio de cada columna.} Aquí está el corazón matemático de la sesión. Completen en el informe la tabla:
+    \begin{center}
+    \begin{tabularx}{\textwidth}{p{2.2cm}p{4.2cm}p{3.1cm}X}
+    \toprule
+    \textbf{Columna} & \textbf{Dominio matemático} & \textbf{Tipo} & \textbf{Valores ilegales posibles}\\
+    \midrule
+    \texttt{hogar} & conjunto finito de códigos & discreto/nominal & códigos repetidos con grafías distintas\\
+    \texttt{mes} & \{2011-12, \ldots, 2014-02\} & discreto/ordenado, cíclico & fechas fuera del estudio\\
+    \texttt{kwh} & $[0, M] \subset \mathbb{R}$ & continuo & negativos, vacíos (NaN), valores absurdos\\
+    \bottomrule
+    \end{tabularx}
+    \end{center}
+    Y ahora el detalle londinense: en Londres, el piso te avisa \textsc{look left} porque el peligro viene del lado que no esperas. \textbf{En un dataset nadie pinta avisos en el piso.} Escribir el dominio de cada columna es pintarlos ustedes: es decidir, antes de operar, desde dónde pueden venir los datos ilegales. Búsquenlos con código (\texttt{describe()}, conteo de NaN, mínimos y máximos) y decidan qué hacer con cada uno, \emph{dejando escrita la decisión}. Eso --- no un ritual de programadores --- es la limpieza de datos: comparar cada valor contra el dominio declarado y juzgar.
+    \item \textbf{Primeras vistas.} Histograma del consumo mensual (¿dónde está el hogar típico? confronten P1) y la curva del consumo mediano por mes del año (¿apareció el invierno? confronten P2).
+    \item \textbf{¿Función o no?} Grafiquen la nube completa: \texttt{mes} en el eje horizontal, \texttt{kwh} en el vertical, un punto por cada (hogar, mes). Tracen mentalmente una recta vertical sobre un mes: la atraviesan \emph{miles} de puntos. Sobre toda la ciudad, el consumo \textbf{no} es función del mes: a un mismo mes le corresponden miles de consumos. Ahora filtren \emph{un solo hogar} y repitan: cada mes tiene exactamente un consumo. Condicionar por hogar convirtió la relación en función. Escriban esta conclusión con la definición formal de la clase (dominio, codominio, regla) y vuelvan sobre su respuesta a P3. Este movimiento --- \emph{condicionar hasta que la relación se vuelva función} --- lo van a repetir toda la vida, y en la sesión 2 lo repetiremos con plata.
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Media página por equipo: qué predijeron, qué encontraron, qué discrepancia hubo y a qué la atribuyen. Frase obligatoria: una oración que empiece por ``Una relación deja de ser función cuando\ldots'' escrita con sus palabras.
+
+\section{Tarea puente (entre las dos sesiones): no me creas --- reprodúcelo}
+El CSV con el que trabajaron en la sesión 1 lo congelé yo. ¿Y por qué habrían de creerme? En ciencia de datos la confianza no se pide: se \emph{reproduce}. La tarea del equipo para esta semana es rehacer mi camino completo y comprobar que llegan exactamente al mismo lugar:
+\begin{enumerate}[label=\arabic*., itemsep=0.15em]
+    \item Con la cuenta de Kaggle que crearon desde la inducción, descarguen \texttt{london\_energy.csv} del dataset \emph{London Homes Energy Data} (el consumo diario por hogar del proyecto Low Carbon London).
+    \item Corran \texttt{agregar\_londres.py} (está en el repositorio del curso) en consola o en Colab. El script suma los días de cada mes por hogar y descarta los meses con menos de 25 días de lectura.
+    \item \textbf{Verifiquen contra el CSV oficial del curso.} Si su archivo es correcto, debe dar \emph{exactamente}: 113.440 filas, 5.556 hogares, rango 2011-12 a 2014-02, mediana 244,8 kWh/mes, y 5.038 meses descartados por cobertura incompleta. Si algo no cuadra, no está ``casi bien'': hay una diferencia, y encontrarla es la tarea.
+\end{enumerate}
+Y dos preguntas para el informe, con defensa escrita de cinco líneas cada una:
+\begin{itemize}[itemsep=0.1em]
+    \item \emph{La regla de los 25 días.} ¿Por qué el profesor descartó los meses con menos de 25 días de lectura? ¿Están de acuerdo? Propongan otra regla defendible (más estricta o más laxa), aplíquenla modificando el script y reporten cuántas filas cambia el dataset. No hay regla ``correcta''; hay reglas defendidas y reglas heredadas sin pensar.
+    \item \emph{El misterio de febrero.} En la curva del año, febrero aparece sistemáticamente por debajo de enero y marzo, en pleno invierno. ¿Falla la calefacción en febrero? (Pista: cuenten los días.) ¿Qué le hace esto a la unidad ``kWh por mes''? ¿Cómo redefinirían la variable para que la comparación entre meses sea justa?
+\end{itemize}
+El pantallazo de la verificación exitosa (o el relato de la cacería de la diferencia) acompaña el informe final del proyecto.
+
+\section{Sesión 2 --- Modelar: la CHEC aterriza en Londres}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir}
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \setcounter{enumi}{3}
+    \item Con el recibo de su casa en la mano: si su hogar consumiera el doble el próximo mes, ¿pagaría exactamente el doble? ¿Más? ¿Menos? ¿Por qué?
+    \item Cuando le cobremos a los hogares de Londres con tarifas CHEC y grafiquemos (consumo, valor) para \emph{todos los estratos revueltos}, ¿la nube pasará el test de la recta vertical? Apuesten y justifiquen.
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{La tarifa en vivo.} Carguen el dataset de tarifas CHEC directamente por API. Repitan el ritual de la sesión 1 (mirar, dominios, ilegales) --- ahora sin acompañamiento: ya saben cruzar solos.
+    \item \textbf{La tarifa como función.} Construyan \texttt{def valor\_factura(kwh, estrato):} con los valores reales del pliego (tramo subsidiado hasta el consumo de subsistencia, tarifa plena arriba). Prueben contra el recibo de un integrante: ¿el modelo reproduce, aproximadamente, lo que su casa pagó? ¿Qué explica la diferencia (cargo fijo, alumbrado público, contribución)? Anótenlo: acaban de auditar su propio modelo.
+    \item \textbf{La decisión de modelación.} Para cobrarle a Londres necesitamos asignarle estrato a cada hogar --- y eso es un supuesto nuestro. Cada equipo elige un criterio (por cuantiles de consumo, al azar con las proporciones de Manizales, todos estrato 3\ldots), lo implementa y \textbf{lo defiende por escrito en tres líneas}. No hay criterio ``correcto''; hay criterios defendibles y criterios que no se pensaron.
+    \item \textbf{La nube.} Apliquen \texttt{valor\_factura} a todos los (hogar, mes) y grafiquen la nube (consumo, valor) coloreada por estrato. Primero revueltos: la recta vertical atraviesa varios puntos --- el valor \emph{no} es función solo del consumo (confronten P5). Luego condicionen por estrato: seis curvas limpias, cada una una función por trozos. El mismo movimiento de la sesión 1, ahora con dinero.
+    \item \textbf{Cuantificar.} Con la nube y el modelo respondan, en pesos: ¿cuánto más paga un hogar de estrato 3 por pasar de 110 a 135 kWh, y cuánto por pasar de 135 a 160? ¿Por qué no es lo mismo, si el aumento de consumo fue igual? (Pista: el consumo de subsistencia en Manizales --- a más de 1.000 m de altitud --- es de 130 kWh/mes; búsquenlo en su recibo.) Calculen también la matriz de correlación de las variables numéricas y escriban qué mide (y qué \emph{no} mide) ese número: la correlación es la covariación --- nuestro concepto rector --- resumida en un solo valor entre $-1$ y $1$.
+    \item \textbf{El microdataset del curso.} Cada estudiante sube a la tabla compartida del curso una fila con su recibo: \texttt{(codigo\_anonimo, mes, kwh, valor\_pagado, estrato)}. Discutan 10 minutos por qué la tabla tiene \emph{esas} columnas y no otras --- qué preguntas futuras permite responder esa estructura y cuáles cierra. Elegir la estructura de una tabla es decidir qué se va a poder preguntar: eso también es matemáticas. Y pinten los puntos del curso sobre la nube de Londres: ahí estamos, entre miles de hogares del otro lado del océano.
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Una página: las dos discrepancias más interesantes entre predicción y resultado, la defensa del criterio de estratificación, y una reflexión de tres líneas sobre qué fue real y qué fue supuesto en todo lo que hicieron.
+
+\begin{cajaia}
+La IA es tutora y auditora de este proyecto, no autora. Las tres reglas del curso aplican (intento propio antes de consultar; la IA no es la autoridad final; todo uso va a la bitácora individual). Para este laboratorio:
+\begin{itemize}[itemsep=0.15em]
+    \item \emph{Conceptos nuevos:} pregúntenle con confianza qué es un CSV, una API, un NaN, un cuantil --- para eso es excelente. Exíjanle ejemplos distintos a los de esta guía.
+    \item \emph{Depuración:} ``Este código da este error: [ambos]. No me des el código corregido; explícame el error y hazme una pregunta que me guíe.''
+    \item \emph{Cacería de errores (puntuable):} pídanle a la IA una función de Python que calcule la factura de energía con tarifas colombianas, sin darle el pliego. Audítenla contra la suya: ¿inventó valores? ¿cobró dos veces el tramo básico? ¿ignoró el estrato? Documenten el veredicto en la bitácora.
+    \item \emph{Prohibido:} pedirle el criterio de estratificación, las conclusiones de los momentos 3, o el informe. Todo integrante debe poder explicar cualquier celda del cuaderno si el monitor se la señala.
+\end{itemize}
+\end{cajaia}
+
+\begin{cajaentrega}
+\textbf{Entregables} (cierre de la semana de la sesión 2): (1) cuaderno del equipo \texttt{L1\_apellidos.ipynb}, ejecutado de arriba a abajo sin errores, con las predicciones fotografiadas y los tres momentos completos de ambas sesiones; (2) bitácora de IA individual (1 página); (3) la fila de cada estudiante en el microdataset del curso; (4) la tarea puente: verificación reproducida y las dos defensas escritas (regla de los 25 días y misterio de febrero).
+
+\textbf{Rúbrica (sobre 5.0):} dominios de columnas y tratamiento justificado de valores ilegales (1.0) · el movimiento relación$\to$función explicado con la definición formal, en las dos sesiones (1.25) · \texttt{valor\_factura} correcta y auditada contra un recibo real (1.0) · cuantificación de cambios por tramos e interpretación de la correlación (0.75) · defensa del criterio de estratificación y reflexión real/supuesto (0.5) · comunicación y confrontación de predicciones (0.5). Cuaderno que no ejecuta completo: se devuelve sin calificar.
+\end{cajaentrega}
+
+\section{Para ir más lejos (opcional): la vuelta al origen}
+Esta guía nació en la cima del London Eye, así que cerremos ahí. La rueda funciona con electricidad: estimen, con supuestos explícitos al estilo de este laboratorio (potencia de los motores, duración de una vuelta, horas de operación al día), cuántos kWh consume el London Eye en un mes --- y usando \texttt{valor\_factura}, cuánto pagaría si la CHEC le cobrara como a un hogar estrato 6. Comparen contra el consumo del hogar mediano de Londres: ¿a cuántas casas equivale la rueda? No hay respuesta exacta; hay estimaciones defendibles. Como casi todo lo importante.
+\end{document}

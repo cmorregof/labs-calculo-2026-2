@@ -1,0 +1,174 @@
+\documentclass[12pt,letterpaper]{article}
+% -------------------------------------------------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\geometry{letterpaper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.12}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{0.5em}{}
+\renewcommand{\arraystretch}{1.25}
+\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\bfseries\color{blue!60!black}, commentstyle=\color{gray}, showstringspaces=false, frame=single, framerule=0.3pt, xleftmargin=1em, aboveskip=0.8em, belowskip=0.8em, literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1}
+% ---- Cajas del laboratorio ----
+\newtcolorbox{cajabitacora}{colback=yellow!8!white,colframe=brown!70!black,title=\textbf{Bitácora del profesor --- Londres, último día},breakable}
+\newtcolorbox{cajalogros}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Logros de este laboratorio},breakable}
+\newtcolorbox{cajareal}{colback=red!4!white,colframe=red!60!black,title=\textbf{Lo real y lo supuesto (léanlo dos veces)},breakable}
+\newtcolorbox{cajaprediccion}[1]{colback=orange!8!white,colframe=orange!80!black,title=\textbf{#1},breakable}
+\newtcolorbox{cajaia}{colback=teal!6!white,colframe=teal!60!black,title=\textbf{Protocolo de IA},breakable}
+\newtcolorbox{cajaentrega}{colback=gray!8!white,colframe=black!70,title=\textbf{Entregables y rúbrica},breakable}
+% -------------------------------------------------
+\begin{document}
+\begin{center}
+    {\Large \textbf{Universidad Nacional de Colombia --- Sede Manizales}}\\
+    {\large \textbf{Cálculo Integral --- Laboratorio computacional}}\\[0.8em]
+    {\LARGE \textbf{Guía L1 --- La factura de la ciudad}}\\[0.4em]
+    {\large Dado lo que consumes cada día, ¿cuánto acumula el mes?}\\[0.5em]
+    {\normalsize Bloque I: La integral como acumulación \quad$\cdot$\quad Dos sesiones de 2 horas \quad$\cdot$\quad Equipos de 3--4 \quad$\cdot$\quad Python + IA en Colab}
+\end{center}
+
+\begin{cajabitacora}
+Esta idea no salió de un libro. Salió de una ducha.
+
+Hace un tiempo estuve en Londres, en el Imperial College, como ponente en un congreso de inteligencia artificial en salud. El último día, mientras me bañaba, se fue el agua. Así, sin aviso, y en el momento más crítico: completamente enjabonado. Me tocó terminar como se pudo, con el lavamanos y la dignidad que quedaba. Y ahí, goteando, pensé: \emph{en el primer mundo también se va el agua}.
+
+Londres es un choque cultural constante. Uno va a cruzar la calle y el piso mismo le grita \textsc{look left} o \textsc{look right}, porque --- como sabrán --- en el Reino Unido se maneja por la izquierda, y la ciudad sabe que el peatón extranjero va a mirar hacia el lado equivocado. Guarden ese detalle, que más adelante en esta guía nos va a servir. Caminé mucho esos días: museos, la Torre de Londres, la luz encendida por todas partes, y ese frío que le hace entender a uno por qué allá la calefacción no es un lujo sino una necesidad. Y entre la ducha traicionera y las luces de la ciudad me fui haciendo preguntas: ¿cuánta luz consumirá un hogar en Londres? ¿Cuánto pagarán? ¿Y cómo sería si les cobrara la CHEC, con nuestras tarifas, con nuestros estratos?
+
+La idea final se me ocurrió en la cima del London Eye --- imagínense esa rueda gigante, que por cierto funciona con electricidad --- mirando a lo lejos el Big Ben y el Támesis. Pensé en un personaje que vive en la pared de cada una de esas casas que veía desde arriba, humilde y constante, y que lleva décadas haciendo cálculo integral sin pedir crédito: \textbf{el contador de la luz}. Fíjense en lo que hace: no le interesa lo que tu casa consume en este instante --- eso sube y baja todo el día, con la ducha, con la nevera, con el computador --- sino \emph{la suma de todo lo que ha pasado}. El contador acumula. Cada contador de energía del mundo es una integral andando, y la factura que llega a fin de mes es el valor de esa integral entre dos fechas.
+
+Ahí me dije: eso es un proyecto. Miles de hogares reales de Londres, las tarifas reales de la CHEC, y una pregunta que parece una suma boba pero es el concepto sobre el que se construye todo este curso: \emph{si sabes lo que un hogar consumió cada día, ¿cuánta energía acumuló el mes?}
+
+Bienvenidos al primer laboratorio. Lo pensé para ustedes desde el otro lado del océano.
+\end{cajabitacora}
+
+\section{¿Qué vamos a hacer?}
+Vamos a tomar el consumo eléctrico \textbf{diario} de hogares reales de Londres --- medido por contadores inteligentes --- y lo vamos a mirar como lo que matemáticamente es: una \textbf{función escalonada}, constante durante cada día, con saltos entre días. Sobre esa escalera calcularemos la energía que acumula un mes: multiplicando el valor de cada escalón por lo que dura y sumando los productos. Esa operación tiene nombre y símbolo --- es la \emph{integral de una función escalonada} (Apostol) --- y este laboratorio existe para que la construyan con las manos antes de que el símbolo $\int$ aparezca en el tablero. Después entrará la plata: cobraremos esa energía con las tarifas \textbf{reales} de la CHEC, estrato por estrato, como si esos hogares vivieran en Manizales, y descubriremos una sutileza que nadie les ha contado sobre el orden en que se acumula el dinero.
+
+\begin{cajareal}
+Este proyecto es un \emph{contrafactual}: un experimento de ``¿qué pasaría si\ldots?''. Sean precisos sobre qué es cada cosa:
+\begin{itemize}[itemsep=0.1em]
+    \item \textbf{Reales:} los consumos (hogares londinenses de verdad, con la energía total de cada día medida por su contador) y las tarifas (el pliego oficial de CHEC publicado en datos abiertos).
+    \item \textbf{Supuestos nuestros:} dos, y hay que tenerlos siempre a la vista. Primero, el cruce entre ambos mundos: ningún londinense paga con tarifas de CHEC, y la asignación de estratos a hogares la decidiremos nosotros (y esa decisión habrá que defenderla). Segundo, uno más fino, que es el corazón matemático de la guía: tratar el consumo como \emph{constante dentro de cada día} --- el escalón. Ningún hogar consume parejo las 24 horas; la escalera diaria es un \emph{modelo} del consumo real. Lo notable, y lo van a comprobar: para la pregunta ``¿cuánta energía acumuló el mes?'' este supuesto no daña nada, porque la integral de la escalera reproduce exactamente lo que el contador sumó. Para otras preguntas (¿a qué hora del día se consume más?) el mismo supuesto sería fatal. Saber \emph{para qué pregunta} un modelo es inocente y para cuál es mentiroso: eso es modelar.
+\end{itemize}
+Por eso las conclusiones de este laboratorio valen para entender \emph{cómo se mide y se cobra la energía acumulada}, no para facturarle a nadie. Separar el dato del supuesto es la primera habilidad de cualquiera que modele en serio --- y la primera cosa que un modelo hecho sin pensar (o pedido entero a una IA) no sabe hacer.
+\end{cajareal}
+
+\begin{cajalogros}
+Al terminar este laboratorio estarás en capacidad de:
+\begin{enumerate}[label=\arabic*., itemsep=0.1em]
+    \item Explicar qué es un archivo CSV, qué es una API y qué es un \emph{dataset}, cargar datos en Colab desde una URL y desde un archivo, y revisar los dominios de las columnas de una tabla antes de operar con ella (la limpieza de datos como acto matemático).
+    \item Modelar una serie de mediciones diarias como función escalonada: escribir la partición $P=\{t_0,t_1,\ldots,t_n\}$ del mes y la regla $s(t)=s_k$ si $t_{k-1}<t<t_k$, y explicar por qué el valor de $s$ en los extremos de cada subintervalo no cambia nada.
+    \item Conceptualizar el producto $s_k\,(t_k-t_{k-1})$ como cantidad con unidades --- (kWh/día) $\times$ días $=$ kWh --- y calcular $\int_a^b s(t)\,dt=\sum_k s_k\,(t_k-t_{k-1})$ con lápiz, con un ciclo y con \texttt{numpy}.
+    \item Verificar con datos y código las propiedades aditiva y homogénea de la integral ($\int(s+t)=\int s+\int t$; $\int c\,s=c\int s$) y la aditividad en subintervalos, y detectar cuándo el dinero las rompe.
+    \item Comparar meses de duraciones distintas con la cantidad correcta --- energía total contra promedio diario $\frac{1}{b-a}\int_a^b s$ --- y construir la curva de acumulación $A(t)$ que el contador dibuja en silencio.
+\end{enumerate}
+\end{cajalogros}
+
+\section{Los datos (y tres palabras nuevas)}
+Antes de tocar código, tres conceptos de infraestructura que a partir de hoy son de ustedes:
+
+\textbf{CSV} (\emph{comma-separated values}) es el formato más humilde y más universal para tablas: un archivo de texto plano donde cada línea es una fila y las columnas van separadas por comas. Sin colores, sin fórmulas, sin adornos: solo los datos. Es el idioma en que las instituciones del mundo publican lo que miden, y por eso es el idioma en que trabajaremos.
+
+\textbf{API} (\emph{application programming interface}) es, para lo que nos importa hoy, un mesero de datos: una URL construida de cierta forma es un pedido, y el servidor responde con los datos solicitados. Cuando abajo lean \texttt{pd.read\_csv("https://www.datos.gov.co/...")}, eso es una API funcionando: el Estado colombiano sirviéndole una tabla a su cuaderno de Colab.
+
+\textbf{Dataset} es una tabla con pretensiones: datos más su documentación --- qué mide cada columna, en qué unidades, quién los recogió y cuándo. Una tabla sin unidades es un chisme sin fuente.
+
+Los tres datasets del proyecto:
+\begin{enumerate}[label=\arabic*., itemsep=0.15em]
+    \item \textbf{Consumo diario de Londres:} \texttt{london\_energy.csv} (dataset \emph{London Homes Energy Data} en Kaggle; proyecto Low Carbon London, publicado por UK Power Networks). Columnas \texttt{hogar}, \texttt{fecha}, \texttt{kwh}: la energía total que el contador de cada hogar registró cada día --- la altura del escalón. Para la sesión 1 trabajaremos con la copia congelada del repositorio del curso; en la tarea puente lo descargarán ustedes mismos de la fuente.
+    \item \textbf{Tarifas CHEC:} el dataset oficial \emph{Costo unitario de tarifas de energía CHEC} en \url{https://www.datos.gov.co} (identificador \texttt{c698-wqig}), con la tarifa por estrato y rango de consumo, mes a mes. Este lo cargaremos en vivo, por API.
+    \item \textbf{El recibo de tu casa:} cada estudiante trae a la sesión 2 un recibo de energía físico o digital de su casa (consumo del mes en kWh, valor pagado, estrato). Será el primer aporte al \emph{microdataset del curso}: una tabla que iremos llenando entre todos a lo largo del semestre.
+\end{enumerate}
+
+\section{Sesión 1 --- Medir un mes: la escalera y su área}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir (a mano, antes de cargar nada)}
+En papel, 15 minutos, se adjunta foto al informe. Se les entrega impresa la gráfica del consumo diario de un hogar londinense concreto durante enero de 2013: una escalera de 31 escalones, sin totales.
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \item Estimen, \emph{a ojo y con cuadrículas}, cuántos kWh acumuló ese hogar en el mes completo. Escriban el número y el método que usaron. (No hay calculadora en este momento; hay ojo y criterio. Piensen en la calefacción y el invierno para juzgar si su número es razonable.)
+    \item Si en lugar de la lectura diaria tuvieran solo la lectura \emph{semanal} (la energía de cada semana, repartida pareja en sus 7 días), ¿la energía total del mes cambiaría? ¿Y la forma de la gráfica?
+    \item El 15 de enero a la medianoche exacta, ¿qué consumo tiene el hogar: el del día 15 o el del 16? ¿Les preocupa? ¿Debería importarle a la energía total del mes?
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.} En el cuaderno base \texttt{L1\_sesion1.ipynb}, con el monitor:
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Cargar y conocer.} Carguen \texttt{london\_energy.csv} con pandas. Antes de cualquier cálculo, contesten con código: ¿cuántas filas? ¿cuántas columnas? ¿cuántos hogares distintos? ¿qué rango de fechas? (\texttt{shape}, \texttt{head}, \texttt{nunique}). A esto se le llama \emph{conocer el dataset}, y hacerlo antes de calcular es el equivalente a mirar antes de cruzar.
+    \item \textbf{El dominio de cada columna.} Y aquí el detalle londinense prometido: en Londres, el piso te avisa \textsc{look left} porque el peligro viene del lado que no esperas. \textbf{En un dataset nadie pinta avisos en el piso.} Escribir el dominio de cada columna es pintarlos ustedes: \texttt{hogar} (conjunto finito de códigos), \texttt{fecha} (días dentro del rango del estudio), \texttt{kwh} ($[0,M]\subset\mathbb{R}$ --- ¿puede un contador registrar un día negativo?). Busquen con código los valores que no pertenecen al dominio declarado (\texttt{describe()}, conteo de NaN, mínimos y máximos, \emph{días faltantes en un mes}) y decidan qué hacer con cada uno, \emph{dejando escrita la decisión}. Eso --- no un ritual de programadores --- es la limpieza de datos: comparar cada valor contra el dominio declarado y juzgar.
+    \item \textbf{La escalera.} Filtren el hogar y el mes de la predicción. Grafiquen con \texttt{plt.step} (y comparen con \texttt{plt.plot}: ¿por qué la línea que une puntos es una mentira aquí?). Escriban en el informe el modelo completo con la notación de la clase: la partición $P=\{t_0,t_1,\ldots,t_{31}\}$ (las fronteras de los días), los valores $s_1,\ldots,s_{31}$ (las alturas), y la regla $s(t)=s_k$ si $t_{k-1}<t<t_k$. Respondan P3 por escrito: en los puntos $t_k$ la función puede valer lo que quiera --- y la energía del mes ni se entera. En la definición de Apostol eso no es un descuido: es un teorema chiquito, y ustedes acaban de verlo en un dataset real.
+    \item \textbf{El producto, con unidades.} Antes de sumar nada: ¿qué \emph{es} $s_{15}\cdot(t_{15}-t_{14})$? Escríbanlo con unidades explícitas y con palabras (``el día 15 el hogar consumió a razón de $s_{15}$ kWh/día durante 1 día, luego aportó $s_{15}$ kWh al mes''). Esta pregunta parece boba y es la más importante del semestre: es en el significado del producto --- no en la suma --- donde el concepto de integral se gana o se pierde.
+    \item \textbf{La integral, tres veces.} Calculen la energía del mes de tres formas y comprueben que coinciden hasta el último decimal: (a) un ciclo \texttt{for} que acumule $s_k\,\Delta t_k$ término a término; (b) \texttt{np.sum} vectorizado; (c) el área bajo la escalera, sombreada rectángulo por rectángulo con \texttt{plt.bar} de ancho 1. Confronten P1: ¿quién del equipo tuvo el mejor ojo? Escriban el resultado con el símbolo que la clase acaba de estrenar: $\int_{t_0}^{t_{31}} s(t)\,dt = \sum_{k=1}^{31}s_k\,\Delta t_k = \ldots$ kWh.
+    \item \textbf{Agrupar sin traicionar.} Construyan la versión semanal del mismo mes (la energía de cada semana repartida pareja en sus días: otra escalonada, con partición más gruesa) y calculen su integral. Confronten P2: la energía total es \emph{la misma}, la gráfica es otra. Discutan: ¿qué preguntas sobreviven al agrupamiento y cuáles mueren? (Acaban de usar, sin permiso, la aditividad de la integral en subintervalos.)
+    \item \textbf{Álgebra de escaleras.} Tomen dos hogares del mismo mes y verifiquen con código que $\int(s+t)=\int s+\int t$ (la energía de la ``casa doble''). Multipliquen un hogar por 3: $\int 3s=3\int s$. Son las propiedades aditiva y homogénea de la clase, ejecutadas sobre hogares de verdad. Guarden este resultado: en la sesión 2, la plata va a romper una de las dos. Apuesten desde ya cuál.
+    \item \textbf{El misterio de febrero.} Grafiquen la energía mensual de su hogar a lo largo de un año (doce integrales, una por mes). En pleno invierno, febrero aparece por debajo de enero y marzo. ¿Falla la calefacción en febrero? (Pista: cuenten los días.) Calculen ahora el promedio diario de cada mes, $\frac{1}{b-a}\int_a^b s(t)\,dt$, y repitan la gráfica. ¿Febrero sigue siendo el mes tacaño? Escriban la moraleja: comparar integrales de intervalos distintos sin normalizar es comparar peras con meses.
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Media página por equipo: qué predijeron, qué encontraron, qué discrepancia hubo y a qué la atribuyen. Frase obligatoria: una oración que empiece por ``La integral de una función escalonada mide\ldots'' escrita con sus palabras y con las unidades correctas.
+
+\section{Tarea puente (entre las dos sesiones): no me creas --- reprodúcelo}
+El CSV con el que trabajaron en la sesión 1 lo congelé yo. ¿Y por qué habrían de creerme? En ciencia de datos la confianza no se pide: se \emph{reproduce}. La tarea del equipo para esta semana:
+\begin{enumerate}[label=\arabic*., itemsep=0.15em]
+    \item Con la cuenta de Kaggle que crearon en la inducción, descarguen \texttt{london\_energy.csv} directamente del dataset \emph{London Homes Energy Data} --- la fuente, no mi copia.
+    \item Elijan 3 hogares y 3 meses cualesquiera (9 casos). Para cada caso, calculen $\int_{\text{mes}} s(t)\,dt$ con su propio código de la sesión 1 sobre el archivo descargado, y comparen contra los valores que obtuvieron en clase con la copia del curso. Deben coincidir \emph{exactamente}. Si algo no cuadra, no está ``casi bien'': hay una diferencia, y encontrarla es la tarea (pista frecuente: días faltantes).
+    \item \textbf{La regla de los 25 días.} En el repositorio está \texttt{agregar\_londres.py}, el script con el que el curso produce la tabla mensual \texttt{londres\_mensual.csv}: suma los días de cada mes por hogar --- es decir, calcula estas mismas integrales al por mayor, 113.440 de ellas --- y descarta los meses con menos de 25 días de lectura. Córranlo y verifiquen que reproduce la tabla del curso. Después defiendan o ataquen la regla, en cinco líneas y en lenguaje de integrales: un día faltante le quita un subintervalo a la partición, y la ``integral del mes'' queda calculada sobre menos mes. ¿Subestima siempre? ¿La regla les parece bien puesta en 25? Propongan otra defendible, aplíquenla modificando el script y reporten cuántas filas cambia.
+\end{enumerate}
+El pantallazo de los 9 casos verificados (o el relato de la cacería de la diferencia) acompaña el informe final del proyecto.
+
+\section{Sesión 2 --- Cobrar el mes: el dinero también se acumula (pero con mañas)}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir}
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \setcounter{enumi}{3}
+    \item Con el recibo de su casa en la mano: si su hogar consumiera exactamente el doble \emph{cada día} del mes, ¿su energía mensual se duplica? ¿Y el valor de la factura? Respondan las dos por separado y justifiquen.
+    \item Dos formas de cobrar el mismo mes con la misma tarifa: (a) calcular la energía total del mes y pasarla una sola vez por la tarifa; (b) cobrar cada día por separado y sumar los 31 cobros. ¿Dan lo mismo? Apuesten y justifiquen. (Miren en su recibo cómo funcionan los tramos de consumo.)
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{La tarifa en vivo.} Carguen el dataset de tarifas CHEC directamente por API. Repitan el ritual de la sesión 1 (mirar, dominios, ilegales) --- ahora sin acompañamiento: ya saben cruzar solos. Fíjense en algo que usaremos al final: la tarifa \emph{cambia mes a mes}. La tarifa también es una función escalonada --- del tiempo.
+    \item \textbf{La tarifa como función.} Construyan \texttt{def valor\_factura(kwh, estrato):} con los valores reales del pliego (tramo subsidiado hasta el consumo de subsistencia, tarifa plena arriba): una función definida por trozos, hecha código. Pruébenla contra el recibo de un integrante: ¿el modelo reproduce, aproximadamente, lo que su casa pagó? ¿Qué explica la diferencia (cargo fijo, alumbrado público, contribución)? Anótenlo: acaban de auditar su propio modelo contra la realidad.
+    \item \textbf{La decisión de modelación.} Para cobrarle a Londres necesitamos asignarle estrato a cada hogar --- y eso es un supuesto nuestro. Cada equipo elige un criterio (por cuantiles de consumo, al azar con las proporciones de Manizales, todos estrato 3\ldots), lo implementa y \textbf{lo defiende por escrito en tres líneas}. No hay criterio ``correcto''; hay criterios defendibles y criterios que no se pensaron.
+    \item \textbf{El orden de la acumulación importa.} El plato fuerte. Para un hogar y un mes, cobren de las dos maneras de P5: (a) \texttt{valor\_factura}$\left(\int_{\text{mes}} s\right)$ --- primero acumular la energía, después cobrar el total; (b) construir la escalonada del \emph{gasto diario} $g(t)=$ \texttt{valor\_factura}$(s(t)\cdot 30,\,\text{estrato})/30$ --- cobrar cada día como si ese ritmo durara el mes --- y acumular $\int_{\text{mes}} g(t)\,dt$. Busquen hogares donde la diferencia sea grande y expliquen \emph{por qué} con los tramos: cobrado día a día, cada día de ráfaga se cobra como si todo el mes corriera a ese ritmo --- desborda el consumo de subsistencia y paga tarifa plena ---, mientras que cobrado el total del mes las ráfagas se promedian con los días frugales \emph{antes} de tocar la tarifa. Una tarifa de tramos crecientes castiga las rachas. Escriban la conclusión con símbolos: si la tarifa $T$ no es lineal, $T\!\left(\int s\right) \neq \int T(s)$ --- y con estos tramos, $\int T(s) \geq T\!\left(\int s\right)$: el orden que elige la CHEC es, para el usuario de rachas, el más barato de los dos. Y confronten P4: la energía se duplicó limpiamente (la homogeneidad de la sesión 1), la factura no (los tramos la rompen). La apuesta del álgebra de escaleras se resuelve aquí.
+    \item \textbf{La curva del contador.} Para su hogar y su mes, grafiquen la acumulación día a día, $A(d)=\sum_{k\le d}s_k\,\Delta t_k$ (con \texttt{np.cumsum}): la curva creciente que el contador de su casa dibuja en silencio, y de la que la factura solo publica el último punto. Pregunta final del informe, sin desarrollar todavía: ¿qué información del consumo diario quedó escondida en la \emph{pendiente} de esa curva? Guarden la respuesta: el próximo laboratorio empieza exactamente ahí.
+    \item \textbf{El microdataset del curso.} Cada estudiante sube a la tabla compartida una fila con su recibo: \texttt{(codigo\_anonimo, mes, kwh, valor\_pagado, estrato)}. Discutan 10 minutos por qué la tabla tiene \emph{esas} columnas y no otras --- qué preguntas futuras permite responder esa estructura y cuáles cierra. Elegir la estructura de una tabla es decidir qué se va a poder preguntar: eso también es matemáticas. Y pinten los puntos del curso sobre la nube (energía mensual, gasto mensual) de los hogares de Londres coloreada por estrato: ahí estamos, entre miles de hogares del otro lado del océano --- sabiendo, desde hoy, qué integral es cada punto.
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Una página: las dos discrepancias más interesantes entre predicción y resultado; la explicación, con tramos y símbolos, de por qué el orden de la acumulación cambia la factura; la defensa del criterio de estratificación; y tres líneas sobre qué fue real y qué fue supuesto en toda la guía.
+
+\begin{cajaia}
+La IA es tutora y auditora de este proyecto, no autora. Las tres reglas del curso aplican (intento propio antes de consultar; la IA no es la autoridad final; todo uso va a la bitácora individual). Para este laboratorio:
+\begin{itemize}[itemsep=0.15em]
+    \item \emph{Conceptos nuevos:} pregúntenle con confianza qué es un CSV, una API, un NaN, una función escalonada, un \texttt{cumsum} --- para eso es excelente. Exíjanle ejemplos con unidades distintas a las de esta guía (litros, datos móviles, pasos).
+    \item \emph{Depuración:} ``Este código da este error: [ambos]. No me des el código corregido; explícame el error y hazme una pregunta que me guíe.''
+    \item \emph{Cacería de errores (puntuable):} pídanle a la IA que calcule ``la energía total del mes'' desde la tabla diaria, sin mostrarle esta guía. Audítenla: ¿qué hizo con los días faltantes? ¿Notó siquiera que faltaban? ¿Comparó el mes de 28 días con el de 31 sin sonrojarse? Documenten el veredicto en la bitácora --- un cálculo correcto sobre una partición incompleta es la mentira más elegante de la ciencia de datos.
+    \item \emph{Prohibido:} pedirle el criterio de estratificación, la explicación de por qué $T(\int s)\neq\int T(s)$, las conclusiones de los momentos 3, o el informe. Todo integrante debe poder explicar cualquier celda del cuaderno si el monitor se la señala.
+\end{itemize}
+\end{cajaia}
+
+\begin{cajaentrega}
+\textbf{Entregables} (cierre de la semana de la sesión 2): (1) cuaderno del equipo \texttt{L1\_apellidos.ipynb}, ejecutado de arriba a abajo sin errores, con las predicciones fotografiadas y los tres momentos completos de ambas sesiones; (2) bitácora de IA individual (1 página); (3) la fila de cada estudiante en el microdataset del curso; (4) la tarea puente: los 9 casos verificados y la defensa de la regla de los 25 días.
+
+\textbf{Rúbrica de acumulación (sobre 5.0):} orientación --- qué cantidad se mide, en qué unidades, con qué partición escrita en notación formal; dominios de columnas y tratamiento justificado de valores ilegales (1.0) · \textbf{producto} --- el significado de $s_k\,\Delta t_k$ explicado con unidades, en la energía y en el dinero (1.25) · suma y propiedades --- las tres formas de calcular coinciden; aditiva y homogénea verificadas y su ruptura con la tarifa explicada (1.0) · refinamiento --- agrupamiento semanal, misterio de febrero con promedio integral, tarea puente exacta (0.75) · función --- la curva del contador construida y la pregunta de la pendiente formulada (0.5) · comunicación y confrontación de predicciones (0.5). Cuaderno que no ejecuta completo: se devuelve sin calificar.
+\end{cajaentrega}
+
+\section{Para ir más lejos (opcional): la vuelta al origen}
+Esta guía nació en la cima del London Eye, así que cerremos ahí. La rueda funciona con electricidad: modelen su operación como función escalonada del día (potencia de los motores, duración de una vuelta, horas de operación), con supuestos explícitos al estilo de este laboratorio, y calculen $\int$ de un mes entero de rueda. Después, usando \texttt{valor\_factura}, cóbrenle ese mes como a un hogar estrato 6, de las dos maneras de la sesión 2: ¿cuánto cambia el orden de la acumulación cuando el cliente es una rueda gigante? Comparen contra el hogar mediano de Londres: ¿a cuántas casas equivale el London Eye? No hay respuesta exacta; hay estimaciones defendibles. Como casi todo lo importante.
+\end{document}

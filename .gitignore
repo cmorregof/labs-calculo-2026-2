@@ -1,0 +1,9 @@
+# El crudo de Kaggle no se versiona: 96 MB. Cada estudiante lo descarga de la fuente (tarea puente).
+london_energy.csv
+# salidas de LaTeX y de Colab
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+.ipynb_checkpoints/
