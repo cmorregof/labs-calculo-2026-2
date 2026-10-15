@@ -45,6 +45,17 @@ Si su copia del mensaje es correcta (tarea puente, parte A), debe dar exactament
 
 Si algo no cuadra, no está "casi bien": hay una diferencia, y encontrarla es la tarea.
 
+## La revelación (no abrir antes de terminar la sesión 1)
+
+<details>
+<summary>Ya escribimos el inventario y la lista de convenciones. Mostrar el mensaje descifrado.</summary>
+
+![El mensaje de Arecibo coloreado por secciones, con el zoom a las fórmulas de las piezas del ADN](img/arecibo_revelado.png)
+
+El cuaderno de la sesión 1 trae, al final, la misma revelación sección por sección con `revelar(bits)` y `zoom(bits, seccion)`.
+
+</details>
+
 ## Entregables (cierre de la semana de la sesión 2)
 
 1. Los tres cuadernos del equipo, ejecutados de arriba a abajo sin errores, con las fotos de las predicciones y los tres momentos completos, en el repositorio `intro-cc` de cada integrante.
