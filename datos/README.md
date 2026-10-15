@@ -6,6 +6,7 @@
 | `london_energy.csv.gz` | Consumo **diario** por hogar (`LCLid, Date, KWH`), 3 510 433 filas, 5 566 hogares | Kaggle, *London Homes Energy Data* (emmanuelfwerr) — proyecto Low Carbon London, UK Power Networks | sept. 2026 |
 | `chec_tarifas_congeladas.csv` | Pliego tarifario CHEC, 2008 a agosto de 2026 (40 294 filas) | datos.gov.co, dataset `c698-wqig` — *Costo unitario de tarifas de energía CHEC* | 28 sept. 2026 |
 | `agregar_londres.py` | Script que produce el mensual a partir del diario (regla: meses con ≥ 25 días de lectura) | curso | — |
+| `arecibo.txt` | Mensaje de Arecibo (16 nov. 1974): una línea de 1 679 caracteres `0`/`1` (397 unos). Lo usa Introducción a las CC, L1 *Primer contacto* | Wikipedia, *Arecibo message*, con `introduccion_cc/congelar_arecibo.py` | oct. 2026 |
 
 Huellas MD5 en `CHECKSUMS.md5`. Verificar: `md5sum -c CHECKSUMS.md5`.
 
