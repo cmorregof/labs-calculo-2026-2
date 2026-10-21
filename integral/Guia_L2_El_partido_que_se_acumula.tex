@@ -1,0 +1,163 @@
+\documentclass[12pt,letterpaper]{article}
+% -------------------------------------------------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\geometry{letterpaper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.12}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{0.5em}{}
+\renewcommand{\arraystretch}{1.25}
+\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\bfseries\color{blue!60!black}, commentstyle=\color{gray}, showstringspaces=false, frame=single, framerule=0.3pt, xleftmargin=1em, aboveskip=0.8em, belowskip=0.8em, literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1}
+% ---- Cajas del laboratorio ----
+\newtcolorbox{cajabitacora}{colback=yellow!8!white,colframe=brown!70!black,title=\textbf{Bitácora del profesor --- la gráfica de abajo en la pantalla},breakable}
+\newtcolorbox{cajalogros}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Logros de este laboratorio},breakable}
+\newtcolorbox{cajareal}{colback=red!4!white,colframe=red!60!black,title=\textbf{Lo real y lo supuesto (léanlo dos veces)},breakable}
+\newtcolorbox{cajaprediccion}[1]{colback=orange!8!white,colframe=orange!80!black,title=\textbf{#1},breakable}
+\newtcolorbox{cajaia}{colback=teal!6!white,colframe=teal!60!black,title=\textbf{Protocolo de IA},breakable}
+\newtcolorbox{cajaentrega}{colback=gray!8!white,colframe=black!70,title=\textbf{Entregables y rúbrica},breakable}
+% -------------------------------------------------
+\begin{document}
+\begin{center}
+    {\Large \textbf{Universidad Nacional de Colombia --- Sede Manizales}}\\
+    {\large \textbf{Cálculo Integral --- Laboratorio computacional}}\\[0.8em]
+    {\LARGE \textbf{Guía L2 --- El partido que se acumula}}\\[0.4em]
+    {\large La tasa de dominio de un equipo, integrada, cuenta el partido entero}\\[0.5em]
+    {\normalsize Bloque I: La integral como acumulación \quad$\cdot$\quad Dos sesiones de 2 horas \quad$\cdot$\quad Equipos de 3--4 \quad$\cdot$\quad Python + IA en Colab}
+\end{center}
+
+\begin{cajabitacora}
+Hay una gráfica que ustedes ya han visto mil veces sin saber que era de este curso. Aparece en las transmisiones de fútbol, abajo en la pantalla: una montaña que sube cuando tu equipo aprieta y se hunde cuando el rival lo arrincona. Los comentaristas la llaman \emph{momentum}. Yo la llamo de otra manera: la \emph{tasa de dominio} del partido --- y les confieso que esa gráfica es la semilla de todos los laboratorios de este curso. Fue mirándola donde me hice la pregunta que hoy les traspaso: si eso que dibuja la televisión es \emph{qué tan duro está apretando} un equipo en cada minuto\ldots\ ¿qué cosa sería la \emph{suma} de todo ese apretar? ¿Se puede medir cuánto partido acumuló cada equipo?
+
+Hoy la respuesta tiene nombre técnico --- función de acumulación --- y un escenario a la altura: la final de Catar 2022, Argentina contra Francia, un partidazo que muchos llaman el más dramático de la historia de los mundiales. Messi por un lado, Mbappé por el otro, un 2--0 que parecía sentencia, 97 segundos que lo voltearon todo, una prórroga con el corazón en la mano y un 3--3 que solo se resolvió en los penales. Tenemos el evento a evento completo de ese partido --- cada pase, cada remate, cada falta, con coordenadas --- gracias a los datos abiertos de StatsBomb.
+
+La pregunta con la que cerró el laboratorio pasado era: en la curva creciente del contador, ¿qué información quedó escondida en la \emph{pendiente}? Hoy la respondemos completa, y con un teorema que ya vieron en el tablero --- el Teorema Fundamental del Cálculo --- funcionando en una cancha. Cuando este semestre empezó, el símbolo $\int$ no existía para ustedes; hoy lo van a usar para medir el partido más grande que se ha jugado en este siglo.
+\end{cajabitacora}
+
+\section{¿Qué vamos a hacer?}
+Vamos a trabajar con el dato real de la final del Mundial 2022 en dos actos. En la \textbf{sesión 1} recibirán la tasa de dominio minuto a minuto --- la escalonada $m(t)$, en \emph{puntos de peligro por minuto}, positiva cuando domina Argentina y negativa cuando domina Francia --- y la van a \emph{acumular}: el dominio neto del partido completo (una integral \emph{con signo}), el dominio acumulado hasta cada minuto $x$ (la \textbf{función de acumulación} $D(x)=\int_0^x m(t)\,dt$, el objeto central de este laboratorio), y la comprobación de que derivar lo acumulado devuelve la tasa. En la \textbf{sesión 2} se invierte el juego: recibirán el evento a evento crudo (4.386 acciones con coordenadas) y construirán \emph{su propio} algoritmo de momentum --- decidiendo qué pesa un remate, qué pesa una llegada al área, cuánta memoria tiene el dominio --- para compararlo contra el del curso y contra la historia que el mundo vio.
+
+\begin{cajareal}
+\begin{itemize}[itemsep=0.1em]
+    \item \textbf{Real:} cada evento del partido (tipo, minuto, segundo, equipo, coordenadas, y para los remates el gol esperado xG), registrado por StatsBomb y publicado como datos abiertos. Los goles, los minutos, el 3--3: todo verificable contra cualquier video del partido.
+    \item \textbf{Supuesto nuestro (y es el supuesto protagonista):} el \emph{momentum no existe en la naturaleza}. Es una cantidad \textbf{diseñada}: alguien decidió qué eventos cuentan como peligro, cuánto pesa cada uno y cuánta memoria tiene el dominio. La receta del curso está documentada línea por línea en \texttt{preparar\_momentum.py} --- pero es \emph{una} receta, no \emph{la} receta. En la sesión 2, la suya competirá con ella.
+    \item \textbf{Supuesto más fino (el mismo del laboratorio 1):} tratar el dominio como \emph{constante dentro de cada minuto} --- el escalón. Un partido no aprieta parejo durante sesenta segundos; la escalera minuto a minuto es un \emph{modelo}. Para la pregunta ``¿cuánto partido acumuló cada equipo?'' es inocente; para la pregunta ``¿en qué segundo empezó la reacción de Francia?'' sería mentiroso.
+\end{itemize}
+Medir exige diseñar la cantidad que se mide: esa es la lección más honda de este laboratorio, y la que separa a quien usa una gráfica de quien puede fabricarla.
+\end{cajareal}
+
+\begin{cajalogros}
+Al terminar este laboratorio estarás en capacidad de:
+\begin{enumerate}[label=\arabic*., itemsep=0.1em]
+    \item Interpretar una tasa con signo --- dominio de un equipo contra dominio del otro --- y su integral como \emph{área con signo}: la resta entre lo acumulado arriba y lo acumulado abajo del eje.
+    \item Construir y graficar la \textbf{función de acumulación} $D(x)=\int_0^x m(t)\,dt$ como función de su límite superior, y usarla para responder preguntas que la tasa sola no puede responder (¿en qué minuto estuvo el partido más ganado?).
+    \item Verificar numéricamente que derivar lo acumulado devuelve la tasa ($D(x+1)-D(x)=m_x$), explicar qué información de $m$ vive en la \emph{pendiente} de $D$, y reconocer en eso el Teorema Fundamental del Cálculo en versión escalonada.
+    \item Usar la aditividad en subintervalos y el valor promedio $\frac{1}{b-a}\int_a^b m$ para comparar tiempos del partido, y distinguir el máximo de la tasa (el minuto más intenso) del máximo de la acumulada (el momento más ganado).
+    \item Diseñar, implementar y defender un algoritmo propio de momentum a partir de eventos crudos --- eligiendo pesos, zona de peligro y suavizado --- y auditar sus decisiones comparándolas con otra receta y con el partido que el mundo vio.
+\end{enumerate}
+\end{cajalogros}
+
+\section{Los datos}
+Todo está congelado en la carpeta \texttt{datos/} del repositorio del curso (\url{https://github.com/cmorregof/labs-calculo-2026-2}), con huellas MD5.
+\begin{enumerate}[label=\arabic*., itemsep=0.15em]
+    \item \textbf{\texttt{momentum\_final2022.csv}} (sesión 1): la tasa de dominio del curso, minuto a minuto --- 142 filas. Columnas: \texttt{minuto} (minuto \emph{corrido}, 0--141: tiempo real de juego con los descuentos, prórroga incluida, penales excluidos), \texttt{peligro\_arg} y \texttt{peligro\_fra} (el peligro generado por cada equipo en ese minuto), \texttt{momentum\_bruto} (la diferencia) y \texttt{momentum} (la diferencia suavizada: esta es $m$). Unidades: \emph{puntos de peligro por minuto}. Los tiempos del partido, en minutos corridos: primer tiempo $[0,53]$, segundo $[53,106]$, primera prórroga $[106,122]$, segunda $[122,142]$.
+    \item \textbf{\texttt{eventos\_final2022.csv}} (sesión 2): el evento a evento simplificado --- 4.386 filas. Columnas: \texttt{periodo}, \texttt{minuto} y \texttt{segundo} (el reloj oficial), \texttt{t\_corrido}, \texttt{equipo}, \texttt{tipo} (con los nombres de StatsBomb, en inglés: \texttt{Pass}, \texttt{Carry}, \texttt{Shot}, \texttt{Dribble}, \texttt{Foul Won}\ldots), \texttt{x} y \texttt{y} (coordenadas en una cancha de $120\times 80$: $x>90$ es el último cuarto de la cancha rival), \texttt{xg} (gol esperado del remate), \texttt{gol} y \texttt{peligro} (los puntos que la receta del curso le dio a ese evento).
+    \item \textbf{\texttt{preparar\_momentum.py}}: el script que produce los dos archivos desde la fuente, con la receta del curso documentada al inicio. Como \texttt{agregar\_londres.py} en el laboratorio 1: no me crean --- reprodúzcanlo.
+    \item \textbf{La fuente:} StatsBomb Open Data (\url{https://github.com/statsbomb/open-data}), partido 3869685. El mismo script sirve para cualquier otro partido de los datos abiertos.
+\end{enumerate}
+
+\section{Sesión 1 --- Acumular: del momentum al partido entero}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir (a mano, antes de cargar nada)}
+En papel, 15 minutos, foto al informe. Se les entrega impresa la gráfica de momentum del partido completo (\texttt{prediccion\_P1\_momentum\_final2022.pdf}: sin goles marcados, sin acumulados).
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \item A ojo: ¿quién acumuló más partido, Argentina (área azul, arriba) o Francia (área roja, abajo)? Estimen el \emph{dominio neto} del partido completo --- el área de arriba menos la de abajo, con las cuadrículas --- y anoten el número con sus unidades.
+    \item ¿En qué minuto estuvo el partido ``más ganado'' para Argentina? Ojo: la pregunta \textbf{no} es en qué minuto Argentina apretaba más duro. Discutan la diferencia entre las dos preguntas antes de responder --- es la discusión más importante de la guía.
+    \item El momentum se mide en puntos de peligro \emph{por minuto}. Lo que se acumula al integrarlo, ¿en qué unidades queda? ¿Y qué \emph{es} esa cantidad? ¿Puede ser negativa?
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.} En el cuaderno base \texttt{L2\_sesion1.ipynb}, con el monitor:
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Cargar y conocer.} Carguen \texttt{momentum\_final2022.csv} desde el repositorio. Antes de cualquier cálculo, contesten con código: ¿cuántas filas? ¿qué columnas? ¿qué rango de minutos? ¿Por qué un partido de ``90 minutos más prórroga'' tiene 142 minutos? (Pista: el reloj oficial se detiene al final de cada tiempo y los descuentos no caben en él; el minuto corrido no se detiene.)
+    \item \textbf{El dominio de cada columna.} El ritual del laboratorio 1, con una novedad: allá un consumo negativo era ilegal; aquí los valores negativos son \emph{el corazón del dato}. Escriban el dominio de cada columna (\texttt{minuto} $\in\{0,1,\ldots,141\}$; \texttt{peligro\_arg}, \texttt{peligro\_fra} $\in[0,\infty)$; \texttt{momentum} $\in\mathbb{R}$) y verifiquen con código que los datos lo respetan. Comprueben también que \texttt{momentum\_bruto} es exactamente \texttt{peligro\_arg} $-$ \texttt{peligro\_fra}: una columna que afirma ser una resta se audita.
+    \item \textbf{La escalera.} Grafiquen $m$ con \texttt{plt.step} y sombreen de azul lo positivo y de rojo lo negativo. Escriban en el informe el modelo con la notación de la clase: la partición $P=\{t_0,t_1,\ldots,t_{142}\}=\{0,1,\ldots,142\}$, los valores $m_0,\ldots,m_{141}$, y la regla $m(t)=m_k$ si $k<t<k+1$. Marquen con líneas verticales los cortes de los tiempos (53, 106, 122).
+    \item \textbf{El producto, con unidades.} Antes de sumar: ¿qué \emph{es} $m_{65}\cdot(t_{66}-t_{65})$? Escríbanlo con unidades y con palabras (``en el minuto 65 Argentina dominó a razón de $m_{65}$ puntos/min durante 1 min, luego aportó $m_{65}$ puntos al partido''). ¿Y qué significa ese producto cuando $m_k<0$?
+    \item \textbf{La integral con signo, tres veces.} Calculen el dominio neto $\int_0^{142} m(t)\,dt$ con (a) un ciclo \texttt{for}, (b) \texttt{np.sum} y (c) el área de la escalera con \texttt{plt.bar} de ancho 1, y comprueben que coinciden. Después descompónganla: el área azul (la suma de los $m_k>0$) y el área roja (la suma de los $|m_k|$ con $m_k<0$). Verifiquen que $\int_0^{142}m = (\text{área azul})-(\text{área roja})$ y escriban por qué la integral \emph{no} es un área sino una \emph{resta} de áreas. Confronten P1.
+    \item \textbf{La función de acumulación.} Construyan $D(x)=\int_0^x m(t)\,dt$ para $x=0,1,\ldots,142$ con \texttt{np.cumsum} (y un cero al principio: $D(0)=0$, ¿por qué?) y grafíquenla debajo de $m$, con el mismo eje horizontal. Ahora sí, P2: encuentren el minuto del mayor apretón (el máximo de la \emph{tasa} $m$) y el minuto del partido más ganado (el máximo de la \emph{acumulada} $D$). ¿Coinciden? ¿Qué está haciendo $m$ exactamente en el minuto en que $D$ alcanza su máximo?
+    \item \textbf{Los picos gemelos.} Miren $D$ con calma: tiene \emph{dos} picos casi de la misma altura, uno en el tiempo reglamentario y otro en la prórroga. Encuéntrenlos con código y vayan a la tabla de eventos (o a su memoria del partido): ¿qué pasó en la cancha pocos minutos después de cada pico? Escriban en tres líneas qué cuenta $D$ que el marcador no cuenta.
+    \item \textbf{Aditividad por tiempos.} Calculen $\int_0^{53}m$, $\int_{53}^{106}m$, $\int_{106}^{122}m$ e $\int_{122}^{142}m$ usando solo restas de $D$ (¿por qué basta con $D(b)-D(a)$?) y verifiquen que suman el total. Calculen el valor promedio de cada tiempo, $\frac{1}{b-a}\int_a^b m$: los tiempos duran distinto, así que comparar integrales sin normalizar sería el misterio de febrero otra vez. ¿Qué tiempo fue de Francia?
+    \item \textbf{Derivar lo acumulado devuelve la tasa.} Calculen \texttt{np.diff(D)} y comparen con $m$, minuto a minuto. Escriban por qué coinciden \emph{exactamente} y no ``casi'': en el interior de cada minuto $m$ es constante, así que para $h$ pequeño $\frac{D(x+h)-D(x)}{h}=m(x)$ sin error alguno. Respondan la pregunta que dejó abierta el laboratorio 1: la pendiente de la curva del contador era el consumo; la pendiente de $D$ es\ldots\ Esto es el Teorema Fundamental del Cálculo que vieron en clase, en su versión escalonada: $D'(x)=m(x)$ en todo $x$ que no sea un entero.
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Media página por equipo: predicciones contra resultados, con obligación de confrontar P2 (¿distinguieron la tasa de la acumulada al primer intento?). Frase obligatoria: una oración que empiece por ``Una función de acumulación responde preguntas que la tasa sola no puede responder, por ejemplo\ldots''.
+
+\section{Tarea puente (entre las dos sesiones): no me creas --- reprodúcelo}
+\begin{enumerate}[label=\arabic*., itemsep=0.15em]
+    \item Corran \texttt{preparar\_momentum.py} en Colab (descarga el evento a evento crudo directamente de StatsBomb, la fuente, no mi copia) y verifiquen que reproduce \emph{exactamente} el \texttt{momentum\_final2022.csv} del curso: 142 minutos, dominio neto $+26{,}73$ puntos de peligro, y los valores de los minutos 84--92 iguales hasta el último decimal. Si algo no cuadra, hay una diferencia; encontrarla es la tarea.
+    \item \emph{La decisión de los penales.} La receta del curso excluye la tanda de penales (periodo 5) del momentum. Defiendan o ataquen esa decisión en cinco líneas, en lenguaje de integrales: ¿qué pasaría con $D(x)$ si los penales entraran como eventos de peligro? ¿Tiene sentido ``acumular dominio'' cuando el juego está detenido?
+    \item \emph{Los goles que pesan raro.} Busquen los seis goles en \texttt{eventos\_final2022.csv} con su xG y su peligro. El 2--2 de Mbappé tiene xG $=0{,}102$: un remate que casi nunca es gol. Y tres de los seis goles tienen exactamente el mismo xG, $0{,}78$: ¿por qué? (Pista: ¿desde dónde se patearon?) ¿Les parece justo que un gol improbable pese tan poco, o que un penal --- peligro que no se construyó jugando --- pese tanto? Guarden su respuesta: alimenta la decisión de pesos de la sesión 2.
+\end{enumerate}
+
+\section{Sesión 2 --- Fabricar: tu propio momentum}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir}
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \setcounter{enumi}{3}
+    \item Si en la receta del momentum multiplican por 10 el peso de los remates, ¿cambia el \emph{signo} del dominio neto del partido? ¿Y el minuto del máximo de $D$? Apuesten y justifiquen.
+    \item ¿Puede la gráfica de momentum \emph{anticipar} un gol --- subir antes de que llegue --- o solo lo celebra después? Piensen en los dos de Mbappé antes de responder.
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.} En el cuaderno base \texttt{L2\_sesion2.ipynb}:
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Conocer el evento a evento.} Carguen \texttt{eventos\_final2022.csv} y repitan el ritual: filas, columnas, dominios (¿qué valores toman \texttt{x} e \texttt{y}? ¿qué tipos de evento hay y cuántos de cada uno?). Encuentren los seis goles, su minuto corrido y su xG.
+    \item \textbf{Diseñar la receta propia.} Decidan, y defiendan por escrito en el cuaderno, cuatro cosas: qué eventos cuentan como peligro; cuánto pesa cada uno; dónde empieza la zona de peligro; y cuánta memoria tiene el dominio (el suavizado). Cada decisión con una línea de justificación. No hay receta correcta; hay recetas defendidas y recetas que no se pensaron.
+    \item \textbf{Implementarla.} Asignen puntos a cada evento, súmenlos por equipo y por minuto corrido con un \texttt{groupby}, resten y suavicen. El resultado es otra función escalonada: su $m(t)$.
+    \item \textbf{Comparar contra la del curso.} Superpongan su $m$ y la del curso en una misma gráfica y calculen la correlación entre ambas. Acumulen la suya: $D_{\text{suya}}(x)$. ¿Cuenta la misma historia? ¿Cambió el signo del dominio neto? ¿Cambió el minuto más ganado? ¿Siguen apareciendo los picos gemelos? Confronten P4.
+    \item \textbf{¿Anticipa o celebra?} Para cada gol, miren qué hizo $m$ en los cinco minutos \emph{anteriores} y en los cinco \emph{posteriores}, con su receta y con la del curso. Confronten P5 con evidencia, no con impresión.
+    \item \textbf{La discusión final.} Argentina acumuló $+26{,}7$ de dominio con la receta del curso y el partido terminó 3--3, decidido en penales: \textbf{la integral mide dominio, no goles}. Toda medida responde exactamente la pregunta para la que fue diseñada, y ninguna otra. Elegir qué medir es elegir qué historia se puede contar.
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Una página: la defensa de su receta (pesos, zona, memoria) y qué historia cuenta distinto a la del curso; el veredicto sobre P5 con evidencia; y la reflexión ``la integral mide dominio, no goles'' escrita con sus palabras.
+
+\section{Tarea puente 2 (cierre del proyecto): otro partido, la misma receta}
+Su algoritmo ya existe y ya fue defendido. Ahora sáquenlo de paseo: elijan \emph{un} partido de los datos abiertos de StatsBomb que hayan visto o que les importe (\texttt{preparar\_momentum.py --listar 43 106} lista el Mundial 2022; \texttt{223 282}, la Copa América 2024 --- con la final Argentina--Colombia y la semifinal contra Uruguay ---; \texttt{55 282}, la Euro 2024), córranle su receta completa --- momentum, $D(x)$, máximos, valor promedio por tiempos --- y escriban tres líneas: ¿la curva cuenta el partido que ustedes recuerdan? Donde no coincida, ¿el problema es del recuerdo o de la receta? El cuaderno debe correr de arriba a abajo con solo cambiar el partido de entrada: eso --- que la receta viaje entre partidos sin retocarla --- es la reproducibilidad que este curso llama honestidad.
+
+\begin{cajaia}
+La IA es tutora y auditora, no autora. Las tres reglas del curso aplican (intento propio antes de consultar; la IA no es la autoridad final; todo uso va a la bitácora individual). Para este laboratorio:
+\begin{itemize}[itemsep=0.15em]
+    \item \emph{Conceptos:} pregúntenle qué es una media móvil exponencial, qué es el xG, qué es \texttt{groupby} o \texttt{cumsum} --- y exíjanle ejemplos fuera del fútbol.
+    \item \emph{Depuración:} la fórmula de la casa: ``Este código da este error: [ambos]. No me des el código corregido; explícame el error y hazme una pregunta que me guíe.''
+    \item \emph{Cacería de errores (puntuable):} pídanle a la IA ``un algoritmo de momentum para un partido de fútbol a partir de eventos'', sin mostrarle esta guía. Audítenlo contra el suyo: ¿definió las unidades? ¿decidió qué hacer con los penales? ¿su suavizado tiene memoria justificada o mágica? ¿puede \emph{explicar} por qué eligió cada peso? Documenten el veredicto: un algoritmo sin decisiones defendidas no es un modelo, es una ocurrencia.
+    \item \emph{Prohibido:} pedirle los pesos de su receta, la respuesta a P2/P5, las conclusiones de los momentos 3, o el informe. Todo integrante debe poder explicar cualquier celda si el monitor la señala.
+\end{itemize}
+\end{cajaia}
+
+\begin{cajaentrega}
+\textbf{Entregables} (cierre de la semana de la sesión 2): (1) cuaderno del equipo \texttt{L2\_apellidos.ipynb} ejecutado de arriba a abajo sin errores, con las predicciones fotografiadas y los tres momentos de ambas sesiones; (2) bitácora de IA individual (1 página); (3) tarea puente 1 (reproducción exacta y las dos defensas) y tarea puente 2 (su receta corriendo sobre otro partido).
+
+\textbf{Rúbrica de acumulación (sobre 5.0):} orientación --- qué cantidad se acumula, con qué signo y en qué unidades, con la partición escrita en notación formal (0.75) · producto --- $m_k\,\Delta t$ explicado en la tasa y en el dominio, incluida la integral con signo (1.0) · \textbf{función} --- $D(x)$ construida, graficada y usada: máximo de la acumulada distinguido del máximo de la tasa, picos gemelos leídos, y $\Delta D = m$ verificado y explicado (1.25) · suma y aditividad --- partido completo por tres vías, tiempos que suman el total, valor promedio por tiempo (0.75) · diseño defendido --- la receta propia con cada decisión justificada y comparada (0.75) · comunicación y confrontación de predicciones (0.5). Cuaderno que no ejecuta completo: se devuelve sin calificar.
+\end{cajaentrega}
+
+\section{Para ir más lejos (opcional): el partido de tu vida}
+El algoritmo que fabricaron no sabe de mundiales: sabe de eventos con pesos. StatsBomb tiene datos abiertos de decenas de competiciones --- ligas femeninas, finales de Champions, mundiales viejos hasta 1958. Elijan \emph{el partido de su vida} (el que vieron con su papá, el de la final que perdieron, el que los hizo hinchas), busquen si está en los datos abiertos, y córranle su receta. Si $D(x)$ les cuenta el partido como lo recuerdan, su medida funciona. Si no\ldots\ quizás el que falla es el recuerdo --- las medidas también sirven para eso.
+\end{document}
