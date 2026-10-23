@@ -5,4 +5,6 @@ fc990dcf56e1cf258409ca58f92e57f6  agregar_londres.py
 9ba40a57a18fab000d17405f48e92c69  arecibo.txt
 f8b245ccde60372f8719a4457c028fd6  momentum_final2022.csv
 de739d310f2ea08a5ad93763ecc51a90  eventos_final2022.csv
-2d394f1bab0d2e6d2990dc6fad1c3d35  preparar_momentum.py
+91683f2745a81583790befcf55cb1849  preparar_momentum.py
+cdb4e211fa11af8aa5c7ac4238493057  sipsa_mensual.csv.gz
+5f8a440f2cee49ed8e6864629d0623bc  congelar_sipsa.py

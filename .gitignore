@@ -6,4 +6,6 @@ london_energy.csv
 *.out
 *.toc
 *.synctex.gz
+*.fls
+*.fdb_latexmk
 .ipynb_checkpoints/

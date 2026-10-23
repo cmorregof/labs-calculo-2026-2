@@ -12,6 +12,7 @@ Los tres cursos comparten la misma infraestructura de laboratorio: cuadernos en 
 | Curso | Guía | Cuaderno sesión 1 | Cuaderno sesión 2 |
 |---|---|---|---|
 | Cálculo Diferencial | [Guía L1](diferencial/Guia_L1_La_factura_de_la_ciudad.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L1_sesion1.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L1_sesion2.ipynb) |
+| Cálculo Diferencial — **L2** | [Guía L2 · El índice sancocho](diferencial/Guia_L2_El_indice_sancocho.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L2_sesion1.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/diferencial/L2_sesion2.ipynb) |
 | Cálculo Integral | [Guía L1](integral/Guia_L1_La_factura_de_la_ciudad.pdf) · [gráfica P1](integral/prediccion_P1_enero2013.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/integral/L1_sesion1.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/integral/L1_sesion2.ipynb) |
 | Cálculo Integral — **L2** | [Guía L2 · El partido que se acumula](integral/Guia_L2_El_partido_que_se_acumula.pdf) · [gráfica P1](integral/prediccion_P1_momentum_final2022.pdf) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/integral/L2_sesion1.ipynb) | próximamente |
 | Introducción a las CC | [Guía L1 · Primer contacto](introduccion_cc/Guia_L1_Primer_contacto.pdf) · [tarea puente](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/introduccion_cc/L1_tarea_puente.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/introduccion_cc/L1_sesion1.ipynb) | [Abrir en Colab](https://colab.research.google.com/github/cmorregof/labs-calculo-2026-2/blob/main/introduccion_cc/L1_sesion2.ipynb) |
@@ -28,7 +29,7 @@ Intento propio antes de consultar · la IA no es la autoridad final · todo uso 
 
 ```
 sesion0/           Guía común a los tres cursos (fuente .tex y PDF)
-diferencial/       Guía L1 + cuadernos sesiones 1 y 2
+diferencial/       L1 La factura de la ciudad + L2 El índice sancocho, con guías y cuadernos de ambas sesiones
 integral/          L1: guía + gráfica de predicción + cuadernos sesiones 1 y 2 · L2: guía + gráfica de predicción + cuaderno sesión 1
 introduccion_cc/   L1 Primer contacto: guía + cuadernos sesión 1, tarea puente y sesión 2 (la factura, archivada en factura_sesion1/)
 datos/             Datos congelados, scripts de preparación (agregar_londres.py, preparar_momentum.py), checksums

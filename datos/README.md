@@ -10,8 +10,21 @@
 | `momentum_final2022.csv` | Tasa de dominio de la final del Mundial 2022 (Argentina–Francia), minuto corrido a minuto: `minuto, peligro_arg, peligro_fra, momentum_bruto, momentum`, 142 filas. Lo usa Integral, L2 *El partido que se acumula* | Producido con `preparar_momentum.py` a partir del evento a evento | oct. 2026 |
 | `eventos_final2022.csv` | Evento a evento simplificado de la misma final (`periodo, minuto, segundo, t_corrido, equipo, tipo, x, y, xg, gol, peligro`), 4 386 filas, penales excluidos | StatsBomb Open Data, partido 3869685 | oct. 2026 |
 | `preparar_momentum.py` | Script que descarga el evento a evento de StatsBomb y produce los dos CSV anteriores con la receta del curso (pesos, zona de peligro, memoria τ = 3 min). Sirve para cualquier partido: `--partido`, `--match-id`, `--listar` | curso | — |
+| `sipsa_mensual.csv.gz` | Precios promedio mensuales mayoristas SIPSA-P (`fecha, ciudad, mercado, producto, precio_kg`), 666 865 filas, 2013-01 a 2024-12, 71 ciudades y 385 productos. Lo usa Diferencial, L2 *El índice sancocho* | DANE, conjunto `gkqq-k3k5` | oct. 2026 |
+| `congelar_sipsa.py` | Descarga los ocho ZIP oficiales del conjunto SIPSA-P 2013--2024 y produce el congelado anterior. Promedia ocho filas repetidas de la fuente de 2021 para dejar una fila por `(fecha, mercado, producto)` | curso / DANE | oct. 2026 |
 
 Huellas MD5 en `CHECKSUMS.md5`. Verificar: `md5sum -c CHECKSUMS.md5`.
 
 Camino en vivo para el pliego (mismo formato que la copia congelada):
 `https://www.datos.gov.co/resource/c698-wqig.csv?$limit=60000` — sin `$limit` la API devuelve solo 1 000 filas.
+
+## Verificar el congelado SIPSA
+
+Desde la raíz del repositorio:
+
+```bash
+python3 datos/congelar_sipsa.py /tmp/sipsa_mensual.csv.gz
+md5 datos/sipsa_mensual.csv.gz /tmp/sipsa_mensual.csv.gz
+```
+
+El resultado debe tener 666 865 filas, 144 meses (2013-01 a 2024-12), 71 ciudades y 385 productos. Como control puntual, `Plátano dominico hartón verde` en `Manizales, Centro Galerías` vale $2 663 por kg en 2024-12.

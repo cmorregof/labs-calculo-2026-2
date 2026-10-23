@@ -3,7 +3,7 @@
 preparar_momentum.py — Congela los datos del Lab 2 (*El partido que se acumula*):
 del evento a evento crudo de StatsBomb a la tasa de dominio minuto a minuto.
 
-Curso de Cálculo Integral, UNAL Manizales (Carlos M. Orrego Franco).
+Curso de Cálculo Integral, UNAL Manizales (Carlos Manuel Orrego Franco).
 Es a este laboratorio lo que agregar_londres.py fue al L1: no me crean — reprodúzcanlo.
 
 Uso:

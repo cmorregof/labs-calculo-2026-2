@@ -1,0 +1,162 @@
+\documentclass[12pt,letterpaper]{article}
+% -------------------------------------------------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\geometry{letterpaper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.12}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{0.5em}{}
+\renewcommand{\arraystretch}{1.25}
+\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\bfseries\color{blue!60!black}, commentstyle=\color{gray}, showstringspaces=false, frame=single, framerule=0.3pt, xleftmargin=1em, aboveskip=0.8em, belowskip=0.8em, literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1}
+% ---- Cajas del laboratorio ----
+\newtcolorbox{cajabitacora}{colback=yellow!8!white,colframe=brown!70!black,title=\textbf{Bitácora del profesor --- Berlín, un domingo},breakable}
+\newtcolorbox{cajalogros}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Logros de este laboratorio},breakable}
+\newtcolorbox{cajareceta}{colback=green!5!white,colframe=green!45!black,title=\textbf{La receta oficial del curso (validada por la mamá y la abuelita del profesor)},breakable}
+\newtcolorbox{cajaprediccion}[1]{colback=orange!8!white,colframe=orange!80!black,title=\textbf{#1},breakable}
+\newtcolorbox{cajaia}{colback=teal!6!white,colframe=teal!60!black,title=\textbf{Protocolo de IA},breakable}
+\newtcolorbox{cajaentrega}{colback=gray!8!white,colframe=black!70,title=\textbf{Entregables y rúbrica},breakable}
+% -------------------------------------------------
+\begin{document}
+\begin{center}
+    {\Large \textbf{Universidad Nacional de Colombia --- Sede Manizales}}\\
+    {\large \textbf{Cálculo Diferencial --- Laboratorio computacional}}\\[0.8em]
+    {\LARGE \textbf{Guía L2 --- El índice sancocho}}\\[0.4em]
+    {\large ¿Cuánto cuesta el almuerzo de tu tierra?}\\[0.5em]
+    {\normalsize Bloque I: Funciones \quad$\cdot$\quad Dos sesiones de 2 horas \quad$\cdot$\quad Equipos de 3--4 \quad$\cdot$\quad Python + IA en Colab}
+\end{center}
+
+\begin{cajabitacora}
+Esta idea nació un domingo en Berlín, cenando con mi amigo Daniel --- el desarrollador, del que siempre les hablo.
+
+Fuimos al restaurante turco del barrio a comer el famoso döner. Daniel me lo vendió con un argumento irrefutable: que me iba a gustar porque ``es lo que le gusta a los niños'', y mi estómago, como bien sabe él, es el estómago de un niño de cinco años. Pidió el mejor döner que había y no se equivocó: imagínense una suerte de Subway, pero mucho más rico, más grande y más barato. Me contó que los venden a la salida de los colegios, que es lo que come la clase obrera alemana. Y entonces soltó el dato que me dejó pensando: en Alemania hay quienes miden la inflación en döner --- estudian cómo el aumento del precio del döner golpea a la clase media y obrera, y el asunto ha llegado tan lejos que se volvió debate político nacional.
+
+Yo le devolví el cuento con el plato típico de Marsella: la bullabesa, que probé una sola vez --- en esencia una sopa con tostadas untadas de mostaza en el fondo, caldo de pescado, y cinco pedazos de pescado distinto nadando adentro. A mí la comida de mar no me encanta, pero había que probar.
+
+Y entre el döner de Daniel y mi bullabesa se me apareció la pregunta: si Alemania mide cómo la inflación golpea a su gente con su plato de todos los días, ¿por qué nosotros no? Nuestro plato de todos los días tiene nombre: sancocho. El que hacen mi mamá y mi abuelita lleva espinazo, yuca, papa, mazorca y plátano verde. (Confesión completa, ya que estamos en confianza: a mí no me gusta ruñir hueso, así que en mi casa me desmenuzan la carne del espinazo, porque o si no, no me como el sancocho.)
+
+Este laboratorio es esa sobremesa convertida en función. Vamos a construir, con los precios oficiales del DANE, el \textbf{índice sancocho}: cuánto cuesta el almuerzo de tu tierra, mes a mes, durante doce años.
+\end{cajabitacora}
+
+\section{¿Qué vamos a hacer?}
+El DANE mide, semana a semana desde 2013, los precios mayoristas de cientos de alimentos en las principales centrales de abastos del país (el sistema SIPSA). Con esos datos y una receta vamos a construir una función: el costo del sancocho como función del tiempo y de la ciudad. Ese objeto --- una receta compuesta con una tabla de precios --- es la excusa perfecta para cerrar el bloque de funciones con sus dos conceptos más finos: la \textbf{composición} (el costo del plato es una cadena de funciones aplicadas una tras otra) y la \textbf{inversa} (¿qué pasos de la cadena se pueden deshacer y cuáles pierden información para siempre?). De paso, la curva que resulta cuenta la historia económica del país que ustedes vivieron de niños: los picos tienen nombre y apellido.
+
+En L1 la pregunta era si una relación es función. Aquí la pregunta sube de nivel: ¿qué se puede \emph{hacer} con las funciones? Componerlas, invertirlas cuando se dejan, y pasarlas como ingredientes a otras funciones --- exactamente lo que hace un \emph{pipeline} de datos, que es como el mundo llama a una composición cuando le paga a alguien por escribirla.
+
+\begin{cajalogros}
+Al terminar este laboratorio estarás en capacidad de:
+\begin{enumerate}[label=\arabic*., itemsep=0.1em]
+    \item Construir un \emph{pipeline} de datos como composición de funciones tabla $\to$ tabla, incluyendo un \texttt{componer()} propio que recibe funciones como argumentos (la función como objeto).
+    \item Expresar una receta como función del mercado: costo(ciudad, fecha) $= \sum$ cantidad$_i$ $\times$ precio$_i$(ciudad, fecha), cuidando la conversión de unidades de cocina a unidades de mercado.
+    \item Apostar, verificar y \emph{explicar} si dos pasos de un proceso conmutan --- y reconocer qué propiedad (la linealidad) hace que a veces sí.
+    \item Clasificar los pasos de un proceso según su invertibilidad: cuáles tienen camino de regreso, cuáles destruyen información, y qué significa eso matemáticamente (inyectividad) y prácticamente (auditoría).
+    \item Leer una serie de precios de doce años como un texto histórico: localizar picos, proponer hipótesis y sustentarlas con los datos.
+\end{enumerate}
+\end{cajalogros}
+
+\section{Los datos y la receta}
+El insumo es \texttt{sipsa\_mensual.csv.gz}, congelado en el repositorio del curso a partir del conjunto oficial \emph{SIPSA-P: precios mayoristas} del DANE en \url{https://www.datos.gov.co} (identificador \texttt{gkqq-k3k5}). El archivo reúne los precios promedio mensuales de 2013 a 2024 y tiene las columnas \texttt{fecha} (año-mes), \texttt{ciudad}, \texttt{mercado}, \texttt{producto} y \texttt{precio\_kg} (pesos por kilogramo). El sufijo \texttt{.gz} solo comprime el CSV: \texttt{pandas} lo abre directamente. Cuando una ciudad tiene varias centrales, el cuaderno promedia sin ponderar las observaciones disponibles de cada producto, ciudad y mes: una decisión de modelación explícita, no un precio minorista. Como en L1, la fuente queda enlazada y la tarea puente les pedirá reproducir el congelado.
+
+\begin{cajareceta}
+Sancocho para seis, según la casa del profesor. Las cantidades están en unidades de cocina; parte del trabajo es convertirlas a las unidades del mercado (kg), porque \textbf{la receta habla en cocina y el DANE habla en kilos} --- y traducir entre dominios es componer con una función de conversión.
+
+\begin{center}
+\begin{tabularx}{0.92\textwidth}{p{3.4cm}p{3.4cm}X}
+\toprule
+\textbf{Ingrediente} & \textbf{En la cocina} & \textbf{En el mercado (aprox.)}\\
+\midrule
+Espinazo de cerdo & 1½ kg & 1,5 kg\\
+Yuca & 1 kg & 1,0 kg\\
+Papa & 1 kg & 1,0 kg\\
+Mazorca & 3 unidades & 3 $\times$ 0,3 kg = 0,9 kg\\
+Plátano verde & 4 unidades & 4 $\times$ 0,35 kg = 1,4 kg\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Nota del profesor: el cilantro, la cebolla y el ajo existen y son innegociables en la vida real, pero los dejamos fuera del índice por ahora --- decisión de modelación: pesan poco en el costo y mucho en la complejidad. ¿Están de acuerdo? Al final del proyecto podrán refutarla con datos.
+\end{cajareceta}
+
+\section{Sesión 1 --- La receta como función}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir (a mano, antes de cargar nada)}
+En papel, 15 minutos, foto al informe:
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \item ¿Cuánto creen que costó en diciembre de 2024 comprar los ingredientes del sancocho de la receta oficial en Manizales? Un número en pesos, y quién del equipo ha mercado de verdad que lo defienda.
+    \item ¿Qué ingrediente pesa más en el costo total: el espinazo o todo lo demás junto? Apuesten.
+    \item En los últimos diez años, ¿qué subió más de precio: el plátano o la papa? ¿Por qué lo creen?
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.} En el cuaderno base \texttt{L2\_sesion1.ipynb}:
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{El ritual, ya sin niñera.} Carguen \texttt{sipsa\_mensual.csv.gz} y hagan solos lo que en L1 hicimos juntos: forma, dominios de cada columna, valores ilegales, decisiones escritas. Tercera vez: ya es de ustedes. Exploren además: ¿cuántos productos distintos mide el DANE? ¿Qué ciudades aparecen? ¿Con qué nombre exacto aparece el mercado de Manizales y cada ingrediente de la receta? (Los datos reales no saben cómo los llamamos en la casa: ``plátano verde'' puede ser ``plátano hartón verde''. Encontrar el nombre oficial de cada ingrediente es parte del trabajo.)
+    \item \textbf{La receta en código.} Escriban la receta como diccionario \texttt{\{producto\_oficial: kg\}} con las conversiones de la caja verde.
+    \item \textbf{El pipeline, pieza por pieza.} Estudien y prueben las cuatro funciones puras del cuaderno. Tres filtran una tabla por ciudad, mes y productos; la cuarta, \texttt{costear}, produce un número con la suma $\sum$ cantidad $\times$ precio.
+    \item \textbf{Componer.} Estudien la función \texttt{componer} y usen su resultado para crear la función de costo del sancocho. Aplíquenla: ¿cuánto costó el sancocho en Manizales en el mes más reciente del dataset? Confronten P1 y P2 con una gráfica de barras del aporte de cada ingrediente.
+    \item \textbf{Confrontar.} ¿Quién del equipo tuvo el mejor ojo de mercado? ¿El espinazo manda, como en casi toda receta con carne? Escriban las discrepancias.
+\end{enumerate}
+
+\section{Sesión 2 --- El índice en el tiempo y el duelo de ciudades}
+
+\begin{cajaprediccion}{Momento 1 --- Predecir}
+\begin{enumerate}[label=P\arabic*., itemsep=0.1em]
+    \setcounter{enumi}{3}
+    \item Bosquejen a mano la curva que esperan del costo del sancocho 2013--2024. ¿Recta que sube? ¿Escalones? ¿Hay algún año donde esperan un salto, y por qué?
+    \item ¿Promediar los precios de un año y luego costear la receta dará lo mismo que costear la receta cada mes y luego promediar los doce costos? Apuesta escrita del equipo, con una frase de justificación. (Esta es la apuesta central del laboratorio.)
+\end{enumerate}
+\end{cajaprediccion}
+
+\textbf{Momento 2 --- Ejecutar.}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{El índice.} Apliquen \texttt{costo\_sancocho} a todos los meses y grafiquen la serie 2013--2024 para Manizales. Ahí está: el índice sancocho. Confronten P4.
+    \item \textbf{Los picos tienen nombre.} Elijan los dos saltos más bruscos de la curva y averigüen qué pasó en Colombia ese mes o ese año (paros, cosechas, clima, tasa de cambio). Tres líneas por pico: hipótesis + evidencia. La gráfica es un documento histórico y ustedes la están leyendo.
+    \item \textbf{El duelo de ciudades.} Repitan el índice para Bogotá y Medellín sobre los mismos ejes. El dato impone dos decisiones de modelación: el sancocho ``igual'' no existe entre ciudades y, donde hay varias centrales, el cuaderno usa el promedio simple de sus precios disponibles. Para tener una receta completa en los 144 meses, el cuaderno propone costilla de cerdo, yuca llanera, papa parda pastusa y plátano hartón verde para Bogotá; y espinazo, yuca criolla, papa capira y plátano hartón verde para Medellín (el chócolo se conserva en ambas). Son \emph{equivalencias de variedades y cortes}, el mismo problema de sustitución que enfrenta el DANE al calcular el IPC. Escriban su tabla de equivalencias por ciudad, defiéndanla en tres líneas, y luego sí: ¿dónde es más caro almorzar? ¿Las tres curvas suben al mismo ritmo? Ojo: la pregunta ``¿dónde subió más?'' tiene dos respuestas legítimas --- en pesos y en porcentaje --- y elegir una también es una decisión que hay que defender.
+    \item \textbf{La apuesta central: ¿conmutan?} Verifiquen P5 con código: camino A (promediar precios del año, luego costear) contra camino B (costear cada mes, luego promediar). Resultado: dan \emph{exactamente} lo mismo. ¿Suerte? No: \textbf{la receta es lineal} --- una suma de precios por constantes --- y las operaciones lineales conmutan con el promedio. Ahora rompan la magia: repitan con la \emph{mediana} en vez del promedio, o filtrando primero el 5\% de precios más altos. Ya no conmuta. Moraleja para el informe: el orden de los pasos importa, \emph{excepto} cuando una propiedad matemática --- con nombre propio --- lo vuelve inofensivo. Saber cuál propiedad es saber matemáticas.
+    \item \textbf{El camino de regreso.} Clasifiquen los pasos de su pipeline: ¿de cuáles hay inversa? Del costo total del plato, ¿pueden recuperar el precio del plátano? (No: la suma colapsa muchas combinaciones en un número --- no inyectiva, información que muere.) ¿Y de pesos a ``sancochos''? Definan la unidad monetaria del curso: $1 \text{ sancocho} = \text{costo del último mes del congelado}$, y conviertan: la matrícula, el salario mínimo, la mesada de alguien del equipo. Esa conversión sí es invertible --- biyección entre pesos y sancochos --- y de paso deja la pregunta picando: ¿el salario mínimo de 2013 alcanzaba para más o menos sancochos que el del último año del dataset?
+    \item \textbf{El plato propio.} Proyecto del equipo: elijan \emph{su} plato --- ajiaco, mondongo, frijolada, o la receta de su propia casa con las cantidades que les dicte quien cocina --- y construyan su índice con el mismo pipeline (esa es la gracia de haberlo escrito como funciones: cambiar de plato es cambiar un diccionario). En la puesta en común del cierre respondemos entre todos la pregunta que ningún equipo puede responder solo: ¿la inflación colombiana tiene sabor regional, o todos los platos se inflaron parejo?
+\end{enumerate}
+
+\textbf{Momento 3 --- Explicar.} Una página: la apuesta de conmutatividad (qué apostaron, qué dio, por qué), la clasificación de invertibilidad de su pipeline, y la lectura histórica de sus dos picos.
+
+\begin{cajaia}
+Las tres reglas del curso siguen vigentes (intento propio, la IA no es la autoridad final, bitácora individual). Lo especial de este laboratorio:
+\begin{itemize}[itemsep=0.15em]
+    \item \emph{La cacería estrella:} pregúntenle a su IA favorita, a secas, ``¿cuánto cuesta hacer un sancocho para seis personas en Colombia?''. Guarden la respuesta. Al final del laboratorio, compárenla con su índice calculado sobre los precios oficiales del DANE. ¿Quién tenía la cifra y quién tenía el cuento? Documenten el veredicto en la bitácora --- esta es la demostración empírica de por qué ``la IA no es la autoridad final'' no es una regla del profesor sino un hecho medible.
+    \item \emph{Conjetura y juez:} antes de correr la apuesta de conmutatividad, pídanle a la IA que prediga si los dos caminos dan lo mismo y por qué. Luego el código decide. Si la IA acertó con la razón correcta (linealidad), reconózcanlo; si improvisó, al expediente.
+    \item \emph{Prohibido:} pedirle el pipeline del plato propio, las hipótesis de los picos o el informe. Y como siempre: toda celda debe poder explicarla cualquiera del equipo.
+\end{itemize}
+\end{cajaia}
+
+\section{Tarea puente (entre las dos sesiones): reproducir el congelado}
+El ritual de L1, ahora con el DANE: el conjunto \texttt{gkqq-k3k5} enlaza ocho ZIP oficiales, de 2013--2017 y de cada año entre 2018 y 2024. Corran \texttt{congelar\_sipsa.py} desde \texttt{datos/}: el script los descarga, normaliza los formatos que cambian entre años y genera \texttt{sipsa\_mensual.csv.gz}. Verifiquen contra las cifras publicadas en \texttt{datos/README.md}: filas, meses, ciudades, productos y el precio del plátano de Manizales en diciembre de 2024.
+
+La decisión a defender por escrito, cinco líneas: el archivo oficial mensual ya publica un \emph{precio promedio por kilogramo}. ¿Es una buena medida para el costo de vida de una familia? ¿Quién podría pagar más que ese promedio y por qué? ¿Qué datos adicionales necesitarían para construir un índice del precio máximo, de la mediana o del precio minorista? No inventen esos datos: nombren la información que faltaría.
+
+\begin{cajaentrega}
+\textbf{Entregables} (cierre de la semana de la sesión 2): (1) cuaderno del equipo \texttt{L2\_apellidos.ipynb} ejecutado de arriba a abajo, con predicciones fotografiadas, los tres momentos y el índice del plato propio; (2) bitácora de IA individual con la cacería estrella; (3) tarea puente: verificación reproducida y defensa del precio medio.
+
+\textbf{Rúbrica (sobre 5.0):} ritual de dominios autónomo y nombres oficiales bien resueltos (0.5) · pipeline de funciones puras y \texttt{componer()} correcto (1.25) · apuesta de conmutatividad: predicción, veredicto y explicación por linealidad, con la ruptura verificada (1.0) · clasificación de invertibilidad razonada, con la unidad sancocho construida (0.75) · índice del plato propio y lectura histórica de los picos (1.0) · comunicación, confrontación de predicciones y reproducibilidad (0.5). Cuaderno que no ejecuta completo: se devuelve sin calificar.
+\end{cajaentrega}
+
+\section{Para ir más lejos (opcional): parientes ilustres}
+El índice sancocho tiene familia. El más famoso es el \emph{Big Mac Index} de The Economist, que desde 1986 compara el poder adquisitivo de las monedas del mundo en hamburguesas; y el más cercano al espíritu de esta guía es el índice del döner que me contó Daniel aquel domingo --- busquen ``Dönerflation'' y encontrarán hasta la propuesta política de ponerle tope al precio. Reto para valientes: con la TRM histórica (también en datos abiertos), conviertan el índice sancocho a dólares y comparen su curva con la de pesos. ¿La inflación del sancocho es cosa de la comida, de la moneda, o de ambas? Esa pregunta, bien respondida, es medio curso de economía --- construida con las funciones de un primer semestre.
+\end{document}
