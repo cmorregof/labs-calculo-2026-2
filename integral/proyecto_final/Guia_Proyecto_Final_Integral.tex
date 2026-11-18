@@ -1,0 +1,282 @@
+\documentclass[12pt,letterpaper]{article}
+% -------------------------------------------------
+% Misma plantilla del proyecto final de Cálculo Diferencial 2026-II
+% -------------------------------------------------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\geometry{letterpaper,left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setstretch{1.12}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{0.5em}{}
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+% ---- Fechas y pesos: se cambian aquí y se actualizan en todo el documento ----
+\newcommand{\fechaInicio}{miércoles 18 de noviembre}
+\newcommand{\fechaHcero}{viernes 20 de noviembre}
+\newcommand{\fechaHuno}{martes 24 de noviembre}
+\newcommand{\fechaHdos}{martes 1 de diciembre}
+\newcommand{\fechaEntrega}{lunes 7 de diciembre, 11:59 p.\,m.}
+\newcommand{\fechaSustUno}{miércoles 9 de diciembre}
+\newcommand{\fechaSustDos}{jueves 10 de diciembre}
+\newcommand{\pesoInforme}{50\,\%}
+\newcommand{\pesoSustentacion}{50\,\%}
+\newcommand{\monitor}{Miguel Gómez Mayorga}
+% ---- Cajas ----
+\newtcolorbox{cajabitacora}{colback=yellow!8!white,colframe=brown!70!black,title=\textbf{Antes de empezar},breakable}
+\newtcolorbox{cajalogros}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Lo que el proyecto pone a prueba},breakable}
+\newtcolorbox{cajaregla}{colback=orange!8!white,colframe=orange!80!black,title=\textbf{La regla del proyecto},breakable}
+\newtcolorbox{cajaia}[1][Protocolo de IA]{colback=teal!6!white,colframe=teal!60!black,title=\textbf{#1},breakable}
+\newtcolorbox{cajaentrega}{colback=gray!8!white,colframe=black!70,title=\textbf{Entregables},breakable}
+\newtcolorbox{cajameta}{colback=blue!5!white,colframe=blue!55!black,title=\textbf{Al terminar la semana},breakable}
+\newcommand{\prompt}[1]{\begin{quote}\small\ttfamily #1\end{quote}}
+% -------------------------------------------------
+\begin{document}
+\begin{center}
+    {\Large \textbf{Universidad Nacional de Colombia --- Sede Manizales}}\\
+    {\large \textbf{Cálculo Integral 2026-II --- Laboratorio computacional}}\\[0.8em]
+    {\LARGE \textbf{Proyecto final}}\\[0.4em]
+    {\large Una tasa, una pregunta y una cantidad acumulada}\\[0.5em]
+    {\normalsize Del 18 de noviembre al 10 de diciembre de 2026 \quad$\cdot$\quad Equipos de 3 \quad$\cdot$\quad Python + IA en Colab}\\
+    {\normalsize Profesor: Carlos Manuel Orrego Franco \quad$\cdot$\quad Monitor: \monitor}
+\end{center}
+
+% Carlos: si quieres abrir con un cuento tuyo, como en L1 y L2, va en esta caja.
+\begin{cajabitacora}
+En \emph{La factura de la ciudad} y en \emph{El partido que se acumula} la guía marcaba el camino paso a paso. En este proyecto reciben los datos listos y una pregunta abierta, y el camino lo trazan ustedes.
+
+Cada equipo recibe una \textbf{tasa} medida en el tiempo: un caudal, una potencia, unos casos por día. La pregunta se responde con la \textbf{cantidad que esa tasa acumula}. Es la pregunta del curso: dada la tasa, ¿cómo se acumula la cantidad? Qué método numérico usar, qué hacer con un dato que falta, qué función ajustar y cuánto creerle al resultado lo deciden ustedes, y esas decisiones son lo que se califica. Dos equipos pueden llegar a números distintos y tener ambos una nota alta, porque cada uno defendió bien su ruta.
+\end{cajabitacora}
+
+\section{¿Qué vamos a hacer?}
+Durante dos semanas cada equipo trabaja con un conjunto de datos reales. Primero calcula la cantidad acumulada directamente sobre los datos, con métodos numéricos. Después ajusta una función a la tasa, la integra a mano con las técnicas del curso y compara los dos resultados. La tercera semana es para cerrar el informe y ensayar la sustentación.
+
+\begin{cajalogros}
+\begin{itemize}[itemsep=0.15em]
+    \item Decir qué cantidad se acumula y en qué unidades queda, a partir de las unidades de la tasa y del tiempo.
+    \item Aproximar una integral sobre datos con más de un método y explicar por qué los resultados difieren.
+    \item Elegir un modelo para la tasa y defender la elección.
+    \item Integrar ese modelo a mano con una técnica del curso y verificar el resultado.
+    \item Decir hasta dónde se le puede creer al número final y qué parte del trabajo es dato y qué parte es supuesto.
+\end{itemize}
+\end{cajalogros}
+
+\begin{cajaregla}
+\textbf{Toda decisión se escribe y se defiende.} El método numérico y su paso, el trato a los datos faltantes, la familia de funciones, la técnica de integración: cada una va a la \emph{bitácora de decisiones} con la alternativa que descartaron y la razón. En la sustentación cualquier integrante debe poder explicar cualquier celda del cuaderno y defender cualquier decisión del equipo.
+
+El número final pesa poco en la nota. Una decisión discutible bien defendida vale más que una decisión acertada que nadie sabe explicar.
+\end{cajaregla}
+
+\section{El menú de datos}
+\textbf{Cada conjunto lo toma un solo equipo}, en orden de inscripción con el monitor. La fecha límite para inscribirse es el \fechaHcero. Los archivos están en la carpeta \texttt{datos/} del proyecto, en el repositorio del curso. Cada uno tiene una ficha de una página con la fuente, las unidades, el periodo y el significado de cada columna. Las celdas vacías son datos que la fuente no reporta; qué hacer con ellas es decisión del equipo.
+
+{\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{L{0.7cm}L{4.1cm}L{7.3cm}L{2.6cm}}
+\toprule
+\textbf{N.º} & \textbf{Tasa, periodo y fuente} & \textbf{Pregunta abierta} & \textbf{Extensión optativa}\\
+\midrule
+\endhead
+D01 & Caudal diario del río Chinchiná (m$^3$/s). 25 de abril a 23 de julio de 2026. XM. & ¿Cuánta agua bajó por el río en esos 90 días, y cuánta de ella la trajo la creciente por encima del caudal que el río ya traía? & Esperanza\\
+D02 & Caudal diario del río La Miel (m$^3$/s). 3 de abril a 1 de junio de 2022. XM. & ¿Cuánta agua le entregó el río al embalse Amaní mientras su caudal bajaba, y cuánta de ella llegó en los primeros veinte días? & EDO\\
+D03 & Caudal diario desviado del río Guarinó hacia el embalse Amaní (m$^3$/s). 6 de julio a 3 de octubre de 2024. XM. & ¿Cuánta agua del Guarinó pasó hacia el embalse en esos 90 días, y en qué día iba la mitad? & Esperanza\\
+D04 & Caudal diario del río La Estrella (m$^3$/s). 27 de diciembre de 2023 a 24 de febrero de 2024. XM. & En una temporada seca, ¿cuánta agua aportó el río en 60 días y qué parte de ella fue caudal base? & EDO\\
+D05 & Casos de COVID-19 notificados por día en Manizales. 13 de diciembre de 2021 a 6 de marzo de 2022. INS. & ¿Cuántos casos dejó la ola de ómicron en la ciudad y qué fracción se notificó antes del pico? & Serie geométrica\\
+D06 & Casos de COVID-19 notificados por día en Manizales. 6 de julio a 6 de diciembre de 2020. INS. & ¿Cuántos casos acumuló la primera ola y en qué fecha iba por la mitad? & EDO\\
+D07 & Demanda horaria de los usuarios de CHEC (MW). 10 a 16 de marzo de 2025. XM. & ¿Cuánta energía consumieron en esa semana, y cuánta de ella está por encima del consumo mínimo de la madrugada? & No tiene\\
+D08 & Potencia horaria del parque solar Tepuy, en La Dorada (MW). 19 a 23 de septiembre de 2025. XM. & ¿Cuánta energía entregó el parque en esos cinco días, y cuánta dejó de entregar frente a cinco días como el mejor de la ventana? & No tiene\\
+D09 & Producción mensual de café de Colombia (miles de sacos de 60 kg por mes). 2018 a 2025. Federación Nacional de Cafeteros. & ¿Cuántos sacos produjo el país en esos ocho años y qué parte se recoge en el último trimestre de cada año? & No tiene\\
+D10 & Demanda diaria de energía del país (GWh/día). 25 de marzo a 21 de agosto de 2020. XM. & ¿Cuánta energía dejó de consumir el país durante la cuarentena? La línea base la definen y la defienden ustedes. & EDO\\
+D11 & Emisiones anuales de CO$_2$ de Colombia (millones de toneladas por año). 1950 a 2025. Global Carbon Project, vía Our World in Data. & ¿Cuánto CO$_2$ ha emitido el país desde 1950 y en qué año había emitido la mitad? & EDO\\
+D12 & Velocidad del viento por hora en la estación del aeropuerto La Nubia (m/s). 23 a 29 de enero de 2023. IDEAM. & ¿Cuál fue el recorrido del viento en esa semana, en kilómetros, y qué fracción ocurre en las seis horas de más viento de cada día? & No tiene\\
+\bottomrule
+\end{longtable}}
+
+\textbf{La extensión es optativa} y no hace falta para la nota máxima. Un equipo puede hacer la que indica su ficha: aproximar la integral con una serie geométrica y acotar el error; leer la tasa como una densidad y calcular una esperanza como integral impropia; o plantear la acumulación como una ecuación diferencial de variables separables. Una extensión bien hecha puede compensar un criterio flojo del informe, hasta 0,3.
+
+\section{Lo que todo proyecto debe contener}
+El camino es libre, pero estas seis piezas son obligatorias en el cuaderno, en este orden.
+
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=2.6em,itemsep=0.5em]
+    \item \textbf{Los datos y la tasa.} Qué se mide, en qué unidades está la tasa, en qué unidades está el tiempo y en qué unidades queda lo acumulado. Dominio de cada columna. Datos faltantes o irregulares y qué decidieron hacer con ellos. La gráfica de la tasa.
+    \item \textbf{La predicción.} Antes de calcular, impriman la gráfica de la tasa y estimen a ojo la cantidad acumulada, con rectángulos o triángulos dibujados a mano. La foto va al cuaderno y al final se confronta con el resultado.
+    \item \textbf{La acumulación numérica.} La integral sobre los datos con \textbf{al menos dos métodos o dos pasos} (suma de Riemann, trapecio, Simpson), la diferencia entre ellos y su explicación. La función de acumulación $A(t)=\int_{t_0}^{t} r(s)\,ds$ graficada. El resultado en una unidad que se entienda.
+    \item \textbf{El modelo.} Una función para la tasa, ajustada \textbf{solo con los primeros dos tercios de los datos}. Deben probar al menos dos familias y elegir una, con un criterio que combine el error del ajuste y un argumento sobre el fenómeno. Cada parámetro se lee con sus unidades. La función elegida debe pedir al menos una técnica del curso al integrarla: sustitución, partes, fracciones parciales o sustitución trigonométrica. Un polinomio solo no cumple.
+    \item \textbf{La integral a mano y la comparación.} La antiderivada del modelo, hecha a mano con el procedimiento completo y verificada con SymPy. Con ella calculan la cantidad acumulada en el \textbf{último tercio}, el que el modelo no vio, y la comparan con la integral numérica de ese mismo tramo. Digan cuánto difieren y por qué.
+    \item \textbf{La respuesta y sus límites.} La respuesta a la pregunta, dada como un rango y no como un número solo. Qué parte del trabajo es dato y qué parte es supuesto. Cuánto cambia la respuesta si cambian una de sus decisiones.
+\end{enumerate}
+
+Si con dos tercios de los datos el modelo todavía no alcanza a ver la forma de la curva, pueden proponer otra partición. Esa también es una decisión: se escribe y se defiende.
+
+\section{Plan de trabajo}
+\begin{center}
+\begin{tabularx}{\textwidth}{L{1.3cm}L{3.9cm}Y}
+\toprule
+\textbf{Hito} & \textbf{Fecha límite} & \textbf{Qué debe estar listo}\\
+\midrule
+H0 & \fechaHcero & Conjunto de datos inscrito con el monitor. Copia del cuaderno base compartida con él.\\
+H1 & \fechaHuno & Piezas P1, P2 y P3. Dos entradas en la bitácora de decisiones.\\
+H2 & \fechaHdos & Piezas P4 y P5, y un borrador de la P6.\\
+Entrega & \fechaEntrega & Cuaderno, informe y bitácoras. Después de esta hora no se modifican.\\
+--- & \fechaSustUno{} y \fechaSustDos & Sustentación con el monitor, seis equipos por día.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+En cada hito el monitor revisa el avance y da el visto bueno o pide un ajuste. Los hitos no tienen nota propia, pero cumplirlos a tiempo cuenta en el criterio 7 de la rúbrica.
+
+Las reglas de IA del curso siguen vigentes: intento propio antes de consultar, la IA no es la autoridad final y todo uso se documenta en la bitácora individual. En el proyecto se agrega una cuarta: \textbf{la IA no decide por el equipo}. Puede criticar una decisión ya tomada, pero no escoge el método, el modelo ni la respuesta. ``Lo escogimos porque la IA lo sugirió'' se califica como decisión sin defender.
+
+%------------------------------------------------------------------
+\subsection{Semana 1: los datos y la acumulación numérica}
+{\large 18 al 24 de noviembre}
+
+\begin{cajameta}
+Hito H1, \fechaHuno: piezas P1, P2 y P3 en el cuaderno.
+\end{cajameta}
+
+\begin{enumerate}[label=\arabic*.,itemsep=0.2em]
+    \item Lean la ficha de su conjunto y abran el cuaderno base. Carguen el archivo y miren las primeras filas.
+    \item Escriban las unidades de la tasa, del tiempo y del producto de ambas. Si no coinciden (m$^3$/s con días, m/s con horas), hagan la conversión a mano antes de programarla.
+    \item Busquen celdas vacías y saltos en el tiempo. Decidan qué hacer y anótenlo en la bitácora de decisiones.
+    \item Grafiquen la tasa. \textbf{Antes de calcular nada}, impriman la gráfica, estimen a ojo lo acumulado y tomen la foto.
+    \item Calculen la integral con al menos dos métodos o dos pasos. El cuaderno base trae la suma de Riemann, la regla del trapecio y la de Simpson, cada una con su explicación y su código. El trapecio y Simpson no los vimos en clase: se aprenden aquí, y deben poder explicarlos.
+    \item Grafiquen la función de acumulación y confronten el resultado con su predicción.
+\end{enumerate}
+
+\begin{cajaia}[Cómo usar la IA esta semana]
+\textbf{Para qué sirve.} Para entender una línea de \texttt{pandas} o de \texttt{numpy} del cuaderno base. Para que les explique de otra manera por qué el trapecio promedia dos alturas o por qué Simpson pide un número par de subintervalos. Para revisar una conversión de unidades que ya hicieron.
+
+\textbf{Para qué no sirve.} Para decidir qué hacer con los datos faltantes ni cuál método usar. Tampoco para hacer la predicción: es de ustedes y se hace sin computador.
+
+\textbf{Un prompt que funciona.}
+\prompt{Calculé la integral de estos datos con la regla del trapecio y con Simpson y me dieron [valores]. Esta es mi explicación de por qué difieren: [explicación]. Dime si tiene un error y hazme una pregunta que me ayude a verlo. No me des la explicación correcta.}
+
+\textbf{Cómo verificar.} Calculen a mano el trapecio con los cinco primeros datos y comparen con lo que da su código en ese tramo.
+\end{cajaia}
+
+\textbf{Señal de que van bien.} Cualquier integrante puede decir qué es, con unidades, uno solo de los sumandos de su suma.
+
+%------------------------------------------------------------------
+\subsection{Semana 2: el modelo, la integral a mano y la respuesta}
+{\large 25 de noviembre al 1 de diciembre}
+
+\begin{cajameta}
+Hito H2, \fechaHdos: piezas P4 y P5, y un borrador de la P6.
+\end{cajameta}
+
+\begin{enumerate}[label=\arabic*.,itemsep=0.2em]
+    \item Separen los datos: los primeros dos tercios para ajustar, el último tercio para comparar.
+    \item Miren la gráfica de la tasa y escojan dos familias candidatas, cada una con una razón ligada al fenómeno. El cuaderno base trae la celda de \texttt{curve\_fit} lista: ustedes escriben la función.
+    \item Ajusten las dos, grafíquenlas sobre los datos y elijan una. Registren la decisión con la familia descartada.
+    \item Integren el modelo elegido \textbf{a mano}, con el procedimiento completo. Tomen la foto o pásenlo a limpio en el informe. Verifiquen con SymPy.
+    \item Con su antiderivada, calculen lo acumulado en el último tercio. Compárenlo con la integral numérica de ese tramo y expliquen la diferencia.
+    \item Respondan la pregunta con un rango. Recalculen cambiando una decisión (otro método, otro trato a los faltantes, la otra familia) y anoten cuánto se mueve la respuesta.
+\end{enumerate}
+
+\begin{cajaia}[Cómo usar la IA esta semana]
+\textbf{Para qué sirve.} Para entender qué hace \texttt{curve\_fit} y por qué un ajuste no converge. Para atacar la elección de modelo que ya tomaron. Para revisar una integración ya hecha, pidiendo solo el primer error.
+
+\textbf{Para qué no sirve.} Para preguntarle qué función ajustar ni para pedirle la antiderivada. En la sustentación el monitor puede pedirles que integren en el tablero una función parecida a su modelo.
+
+\textbf{Un prompt que funciona.}
+\prompt{Esta es mi integración a mano de f(t) = [modelo], por [técnica]: [pasos]. Si hay un error, dime solo en qué paso está el primero y hazme una pregunta que me ayude a verlo. No escribas la antiderivada correcta.}
+
+\textbf{Cómo verificar.} Tienen tres caminos independientes: derivar su antiderivada a mano y recuperar el modelo, SymPy, y la integral numérica del modelo en un intervalo corto. Los tres deben coincidir.
+\end{cajaia}
+
+\textbf{Señal de que van bien.} Cualquier integrante puede escribir el modelo en el tablero, decir qué significa cada parámetro y explicar por qué esa técnica de integración y no otra.
+
+%------------------------------------------------------------------
+\subsection{Semana 3: el informe y el ensayo}
+{\large 2 al 8 de diciembre. El martes 8 es festivo.}
+
+Esta semana no trae tareas nuevas. Escriban el informe, completen las bitácoras y ejecuten \emph{Entorno de ejecución $\to$ Reiniciar y ejecutar todo}: el cuaderno debe correr de arriba a abajo sin errores. Después ensayen. Sorteen entre ustedes las tres partes de la exposición varias veces, porque en la sustentación cada uno expone la que le toque.
+
+\begin{cajaia}[Cómo usar la IA esta semana]
+\textbf{Para qué sirve.} Para ensayar la sustentación con la IA en el papel de jurado, una pregunta a la vez y sin que les dé la respuesta. Para comprobar que el informe se entiende: pídanle que diga con sus palabras qué hizo el equipo y revisen si acertó.
+
+\textbf{Para qué no sirve.} Para redactar el informe ni las conclusiones. Durante la sustentación no se usa.
+\end{cajaia}
+
+\section{Entregables y formato del informe}
+\begin{cajaentrega}
+\begin{itemize}[itemsep=0.1em]
+    \item \textbf{Un cuaderno de Colab} con las seis piezas en orden, que ejecuta de arriba a abajo. Un cuaderno que no ejecuta completo se devuelve sin calificar.
+    \item \textbf{Un informe en PDF de máximo cuatro páginas}, del equipo.
+    \item \textbf{La bitácora de decisiones} del equipo, con al menos cinco decisiones. Va como anexo del informe y no cuenta en las cuatro páginas.
+    \item \textbf{La bitácora de IA} de cada integrante.
+\end{itemize}
+\end{cajaentrega}
+
+El informe tiene cuatro partes, más o menos una página cada una:
+\begin{enumerate}[label=\arabic*.,itemsep=0.1em]
+    \item \textbf{La pregunta y los datos.} Qué se acumula, unidades, qué hicieron con los datos faltantes, la gráfica de la tasa y la predicción a ojo.
+    \item \textbf{La acumulación numérica.} Métodos, pasos, resultados y la explicación de la diferencia.
+    \item \textbf{El modelo y la integral a mano.} Las dos familias, la elegida y el procedimiento completo de integración.
+    \item \textbf{La comparación, la respuesta y sus límites.} La diferencia en el último tercio y su causa, la respuesta como rango, qué es dato y qué es supuesto.
+\end{enumerate}
+Cada entrada de la bitácora de decisiones dice qué había que decidir, qué alternativas consideraron, qué eligieron, por qué y qué pierden con esa elección.
+
+\section{Cómo se califica}
+La nota del proyecto combina el informe del equipo (\pesoInforme) y la sustentación individual (\pesoSustentacion).
+
+\subsection{Rúbrica del informe (grupal, sobre 5,0)}
+\begin{center}
+\footnotesize\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{L{3.0cm}YYY}
+\toprule
+\textbf{Criterio} & \textbf{Completo} & \textbf{Parcial} & \textbf{Insuficiente}\\
+\midrule
+\textbf{1. Datos, unidades y predicción} (0,6) & Dice qué se acumula y en qué unidades. Los datos faltantes tienen una regla escrita. La predicción a ojo está y se confronta. \textbf{(0,6)} & Las unidades de lo acumulado no se justifican, o los faltantes se trataron sin decir cómo. \textbf{(0,3)} & No se sabe qué cantidad se está midiendo. \textbf{(0--0,1)}\\
+\textbf{2. Acumulación numérica} (1,0) & Dos métodos o dos pasos, bien aplicados. Explica por qué difieren. La función de acumulación está graficada y leída. \textbf{(1,0)} & Los cálculos están pero la diferencia no se explica, o hay un solo método. \textbf{(0,5)} & El cálculo es incorrecto o solo aparece una salida sin explicación. \textbf{(0--0,2)}\\
+\textbf{3. Modelo y su defensa} (0,8) & Dos familias comparadas sobre los mismos datos. La elección combina el error con un argumento sobre el fenómeno. Parámetros con unidades. \textbf{(0,8)} & La elección se apoya solo en ``se ve mejor'' o solo en un número. \textbf{(0,4)} & Una sola familia, o un modelo sin relación con los datos. \textbf{(0--0,2)}\\
+\textbf{4. Integral a mano y comparación} (1,2) & Procedimiento completo y correcto con una técnica del curso, verificado. La comparación en el último tercio está y su diferencia se explica. \textbf{(1,2)} & La antiderivada es correcta pero falta el procedimiento, o la comparación no se explica. \textbf{(0,6)} & La antiderivada está mal, o solo aparece la salida de SymPy. \textbf{(0--0,3)}\\
+\textbf{5. Respuesta y límites} (0,6) & Responde la pregunta con un rango. Separa dato de supuesto y muestra cuánto cambia la respuesta al cambiar una decisión. \textbf{(0,6)} & Da un número sin rango, o no discute hasta dónde creerle. \textbf{(0,3)} & No responde la pregunta, o la respuesta contradice el cuaderno. \textbf{(0--0,1)}\\
+\textbf{6. Bitácora de decisiones} (0,5) & Al menos cinco decisiones, cada una con su alternativa y una razón propia. \textbf{(0,5)} & Decisiones listadas sin alternativas o con razones genéricas. \textbf{(0,25)} & No hay bitácora, o se escribió al final como trámite. \textbf{(0--0,1)}\\
+\textbf{7. Proceso y reproducibilidad} (0,3) & Hitos a tiempo y cuaderno ordenado que otro equipo puede ejecutar. \textbf{(0,3)} & Un hito tarde o un cuaderno difícil de seguir. \textbf{(0,15)} & Trabajo concentrado en la última semana. \textbf{(0)}\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Sustentación (individual, sobre 5,0)}
+Cada equipo tiene un turno de \textbf{18 minutos} con el monitor, sin público, el \fechaSustUno{} o el \fechaSustDos. El horario se publica con la inscripción. El turno tiene tres momentos:
+\begin{itemize}[itemsep=0.1em]
+    \item \textbf{Exposición.} El proyecto se divide en tres partes: (a) datos, predicción y acumulación numérica; (b) modelo e integral a mano; (c) comparación, respuesta y límites. \textbf{Cada integrante sortea la suya al llegar} y la expone en dos minutos, así que todos preparan todo.
+    \item \textbf{Preguntas individuales.} El monitor escoge quién responde. A cada integrante le señala una celda del cuaderno, le pregunta por una decisión del equipo (``¿por qué no hicieron lo otro?'') y le pide una entrada de su bitácora de IA.
+    \item \textbf{Calificación.} El equipo sale y el monitor califica en ese momento.
+\end{itemize}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{L{4.2cm}Y}
+\toprule
+\textbf{Criterio} & \textbf{Qué se espera para la nota completa}\\
+\midrule
+\textbf{1. Exposición de su parte} (1,5) & Explica qué se midió, por qué y qué se encontró, con el vocabulario del curso.\\
+\textbf{2. Celda señalada} (1,5) & La explica línea por línea, dice qué cantidad mide y en qué unidades, y anticipa qué pasaría si se cambia algo.\\
+\textbf{3. Defensa de una decisión} (1,0) & Nombra la alternativa descartada y da una razón que se sostiene.\\
+\textbf{4. Bitácora de IA} (1,0) & Muestra una entrada propia y explica qué aceptó, qué corrigió y qué rechazó.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Valen las reglas de L1 y L2. Corregirse no resta. ``No sé, pero razono desde lo que sí sé'' vale más que una respuesta improvisada. La IA no se usa durante la sustentación.
+
+\end{document}
